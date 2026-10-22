@@ -257,7 +257,7 @@
               <span><strong id="stressed-count">0</strong> Stressed</span>
               <span><strong id="overwhelmed-count">0</strong> Overwhelmed</span>
             </div>
-          </div>
+          </section>
         </section>
 
         <section
@@ -274,11 +274,79 @@
               Find a few grounded reminders and support options for difficult days.
             </p>
           </div>
-          <div class="placeholder-card">
-            <span class="card-label">Coming next</span>
-            <h3>Support resources will live here.</h3>
-            <p>Practical information and trusted places to reach out when you need extra support.</p>
+          <div class="support-card support-card--reminder">
+            <span class="card-label">Your support card</span>
+            <h3>Start with someone you trust.</h3>
+            <p>Look at your support card and choose the person or service that feels easiest to contact right now.</p>
           </div>
+
+          <section class="support-section" aria-labelledby="counsellor-title">
+            <div class="support-heading">
+              <div>
+                <p class="card-label">My counsellor</p>
+                <h3 id="counsellor-title">Keep their details close</h3>
+              </div>
+              <span class="support-heading-note">Stored only here</span>
+            </div>
+            <form class="support-plan-form" id="support-plan-form">
+              <label>
+                <span>Counsellor name</span>
+                <input id="counsellor-name" name="counsellorName" type="text" maxlength="80" autocomplete="name" placeholder="Name" />
+              </label>
+              <label>
+                <span>Phone or contact number</span>
+                <input id="counsellor-phone" name="counsellorPhone" type="tel" maxlength="30" autocomplete="tel" placeholder="Optional" />
+              </label>
+              <label>
+                <span>Telegram username</span>
+                <input id="counsellor-telegram" name="counsellorTelegram" type="text" maxlength="64" autocomplete="off" placeholder="e.g. @username" />
+              </label>
+              <button class="support-save-button" type="button">Save counsellor details</button>
+              <p class="form-status" id="support-plan-status" role="status" aria-live="polite"></p>
+            </form>
+            <div class="contact-actions" id="counsellor-contact-actions" hidden></div>
+          </section>
+
+          <section class="support-section message-card" aria-labelledby="opening-message-title">
+            <div class="support-heading">
+              <div>
+                <p class="card-label">Suggested opening message</p>
+                <h3 id="opening-message-title">You can use this as-is</h3>
+              </div>
+            </div>
+            <p class="opening-message" id="opening-message">Hey, I've been having a rough time with ____. Got time to talk?</p>
+            <button class="support-save-button" id="copy-message-button" type="button">Copy Message</button>
+            <p class="form-status" id="copy-message-status" role="status" aria-live="polite"></p>
+          </section>
+
+          <section class="support-section" aria-labelledby="professional-title">
+            <div class="support-heading">
+              <div>
+                <p class="card-label">Professional support</p>
+                <h3 id="professional-title">Talk to someone trained to help</h3>
+              </div>
+            </div>
+            <div class="resource-list">
+              <article class="resource-item">
+                <div>
+                  <h4>SAF Counselling Hotline</h4>
+                  <p>1800 278 0022</p>
+                </div>
+                <a class="contact-button" href="tel:18002780022">Call</a>
+              </article>
+              <article class="resource-item">
+                <div>
+                  <h4>National Mindline</h4>
+                  <p>Available 24 hours</p>
+                  <p>Call 1771 · WhatsApp +65 6669 1771</p>
+                </div>
+                <div class="contact-actions">
+                  <a class="contact-button" href="tel:1771">Call</a>
+                  <a class="contact-button contact-button--whatsapp" href="https://wa.me/6566691771">WhatsApp</a>
+                </div>
+              </article>
+            </div>
+          </section>
         </section>
       </main>
 

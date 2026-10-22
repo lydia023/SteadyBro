@@ -12,8 +12,14 @@ const calendarGrid = document.querySelector("#calendar-grid");
 const calendarMonthLabel = document.querySelector("#calendar-month-label");
 const summaryMonthLabel = document.querySelector("#summary-month-label");
 const entryPopover = document.querySelector("#entry-popover");
+const supportPlanForm = document.querySelector("#support-plan-form");
+const supportPlanStatus = document.querySelector("#support-plan-status");
+const counsellorContactActions = document.querySelector("#counsellor-contact-actions");
+const copyMessageButton = document.querySelector("#copy-message-button");
+const copyMessageStatus = document.querySelector("#copy-message-status");
 const dailyEntriesKey = "quickResetDailyEntries";
 const weeklyEntriesKey = "quickResetWeeklyEntries";
+const supportPlanKey = "quickResetSupportPlan";
 let pendingDailyUpdate = null;
 let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let selectedCalendarEntry = null;
@@ -211,6 +217,96 @@ function readWeeklyEntries() {
 
 function writeWeeklyEntries(entries) {
   localStorage.setItem(weeklyEntriesKey, JSON.stringify(entries));
+}
+
+function readSupportPlan() {
+  try {
+    const storedPlan = localStorage.getItem(supportPlanKey);
+    if (!storedPlan) return {};
+    const parsedPlan = JSON.parse(storedPlan);
+    return parsedPlan && typeof parsedPlan === "object" && !Array.isArray(parsedPlan) ? parsedPlan : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeSupportPlan(plan) {
+  localStorage.setItem(supportPlanKey, JSON.stringify(plan));
+}
+
+function normalisePhoneNumber(phone) {
+  return phone.replace(/[^\d+]/g, "");
+}
+
+function normaliseTelegramUsername(username) {
+  return username.trim().replace(/^@/, "");
+}
+
+function renderCounsellorContactActions() {
+  const plan = readSupportPlan();
+  counsellorContactActions.innerHTML = "";
+
+  const phone = normalisePhoneNumber(plan.counsellorPhone || "");
+  if (phone) {
+    const callLink = document.createElement("a");
+    callLink.className = "contact-button";
+    callLink.href = `tel:${phone}`;
+    callLink.textContent = "Call counsellor";
+    counsellorContactActions.append(callLink);
+  }
+
+  const telegramUsername = normaliseTelegramUsername(plan.counsellorTelegram || "");
+  if (telegramUsername) {
+    const telegramLink = document.createElement("a");
+    telegramLink.className = "contact-button contact-button--telegram";
+    telegramLink.href = `https://t.me/${encodeURIComponent(telegramUsername)}`;
+    telegramLink.textContent = "Open Telegram";
+    counsellorContactActions.append(telegramLink);
+  }
+
+  counsellorContactActions.hidden = counsellorContactActions.childElementCount === 0;
+}
+
+function loadSupportPlan() {
+  const plan = readSupportPlan();
+  supportPlanForm.querySelector("#counsellor-name").value = plan.counsellorName || "";
+  supportPlanForm.querySelector("#counsellor-phone").value = plan.counsellorPhone || "";
+  supportPlanForm.querySelector("#counsellor-telegram").value = plan.counsellorTelegram || "";
+  renderCounsellorContactActions();
+}
+
+function saveSupportPlan() {
+  const formData = new FormData(supportPlanForm);
+  const existingPlan = readSupportPlan();
+  const plan = {
+    ...existingPlan,
+    counsellorName: formData.get("counsellorName").trim(),
+    counsellorPhone: formData.get("counsellorPhone").trim(),
+    counsellorTelegram: formData.get("counsellorTelegram").trim(),
+  };
+
+  try {
+    writeSupportPlan(plan);
+    renderCounsellorContactActions();
+    supportPlanStatus.textContent = "Counsellor details saved on this device.";
+    supportPlanStatus.className = "form-status form-status--success";
+  } catch {
+    supportPlanStatus.textContent = "Counsellor details could not be saved on this device.";
+    supportPlanStatus.className = "form-status form-status--error";
+  }
+}
+
+async function copyOpeningMessage() {
+  const message = document.querySelector("#opening-message").textContent;
+
+  try {
+    await navigator.clipboard.writeText(message);
+    copyMessageStatus.textContent = "Message copied.";
+    copyMessageStatus.className = "form-status form-status--success";
+  } catch {
+    copyMessageStatus.textContent = "Copy is not available here. Please select the message manually.";
+    copyMessageStatus.className = "form-status form-status--error";
+  }
 }
 
 function showWeeklyStatus(message, type) {
@@ -464,6 +560,10 @@ entryPopover.addEventListener("click", (event) => {
   if (event.target === entryPopover) closeEntryPopover();
 });
 
+supportPlanForm.querySelector(".support-save-button").addEventListener("click", saveSupportPlan);
+copyMessageButton.addEventListener("click", copyOpeningMessage);
+
 setCurrentDate();
 showPage("daily");
 renderCalendar();
+loadSupportPlan();

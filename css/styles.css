@@ -631,6 +631,196 @@ h1 {
   margin-top: 21px;
 }
 
+.support-card,
+.support-section {
+  margin-top: 30px;
+  padding: 21px 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.support-card--reminder {
+  border-color: var(--sage);
+  background: var(--sage-soft);
+}
+
+.support-card h3,
+.support-heading h3 {
+  margin: 10px 0 7px;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.support-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.message-card {
+  margin-top: 30px;
+}
+
+.opening-message {
+  margin: 18px 0 14px;
+  padding: 14px;
+  border-left: 3px solid var(--sage);
+  background: var(--sage-soft);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.support-heading-note {
+  padding-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.support-plan-form {
+  display: grid;
+  gap: 13px;
+  margin-top: 19px;
+}
+
+.support-plan-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.support-plan-form input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.support-plan-form input:focus {
+  border-color: var(--sage-dark);
+}
+
+.support-save-button {
+  min-height: 44px;
+  margin-top: 2px;
+  border: 1px solid var(--sage-dark);
+  border-radius: 11px;
+  background: transparent;
+  color: var(--sage-dark);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.support-save-button:hover,
+.support-save-button:focus-visible {
+  background: var(--sage-soft);
+  outline: none;
+}
+
+.contact-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.contact-button {
+  width: 100%;
+}
+
+.contact-button--telegram {
+  border-color: #688ca3;
+  background: #688ca3;
+}
+
+.support-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.support-heading h3 {
+  margin-bottom: 0;
+  font-size: 17px;
+}
+
+.contact-button {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  border: 1px solid var(--sage-dark);
+  border-radius: 10px;
+  background: var(--sage-dark);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.contact-button--whatsapp {
+  border-color: #6f927f;
+  background: #6f927f;
+}
+
+.resource-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 19px;
+}
+
+.resource-item {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+.resource-item h4 {
+  margin: 0 0 5px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.resource-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.resource-item .contact-actions {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.resource-item .contact-button {
+  width: 100%;
+}
+
+
+
 .info-popover {
   position: fixed;
   inset: 0;
