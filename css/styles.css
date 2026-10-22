@@ -705,13 +705,21 @@ h1 {
   background: #fbfcfa;
 }
 
-.calendar-day--today > span {
+.calendar-day--today > .calendar-date-number {
   display: inline-grid;
   width: 24px;
   height: 24px;
   place-items: center;
   border: 1px solid var(--sage);
   border-radius: 50%;
+}
+
+.mood-emoji {
+  display: block;
+  min-height: 17px;
+  margin-top: 3px;
+  font-size: 15px;
+  line-height: 1;
 }
 
 .calendar-day:hover:not(:disabled),
@@ -1038,17 +1046,33 @@ h1 {
 }
 
 .message-card {
-  margin-top: 30px;
+  margin-top: 26px;
+  padding-top: 17px;
+  padding-bottom: 17px;
 }
 
 .opening-message {
-  margin: 18px 0 14px;
+  margin: 16px 0 16px;
   padding: 14px;
   border-left: 3px solid var(--sage);
   background: var(--sage-soft);
   color: var(--ink);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.message-subheading {
+  max-width: 310px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#copy-message-button {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .support-heading-note {
@@ -1115,7 +1139,7 @@ h1 {
 
 #counsellor-contact-actions {
   grid-template-columns: 1fr;
-  margin-top: 4px;
+  margin-top: 10px;
 }
 
 #support-plan-status {

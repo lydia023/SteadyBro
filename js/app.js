@@ -74,6 +74,11 @@ const groundSteps = [
   ["2 things I can smell", "Notice two smells, even if they are subtle."],
   ["1 emotion I can feel", "Name one emotion you can feel right now."],
 ];
+const moodEmojis = {
+  okay: "🙂",
+  stressed: "😐",
+  overwhelmed: "😣",
+};
 
 const infoCopy = {
   mind: "Naming one thing can make it feel a little less noisy. You do not need to explain it perfectly.",
@@ -168,13 +173,21 @@ function renderCalendar() {
     dayButton.disabled = !entry;
     if (date.getMonth() !== monthStart.getMonth()) dayButton.classList.add("calendar-day--outside");
     if (dateKey === getTodayDate()) dayButton.classList.add("calendar-day--today");
-    dayButton.innerHTML = `<span>${date.getDate()}</span>`;
+    const dateLabel = document.createElement("span");
+    dateLabel.className = "calendar-date-number";
+    dateLabel.textContent = date.getDate();
+    dayButton.append(dateLabel);
 
     if (entry) {
-      const indicator = document.createElement("i");
-      indicator.className = `mood-dot mood-dot--${entry.mood}`;
-      indicator.setAttribute("aria-label", entry.mood || "Recorded");
+      const moodEmoji = moodEmojis[entry.mood] || "";
+      const indicator = document.createElement("span");
+      indicator.className = "mood-emoji";
+      indicator.textContent = moodEmoji;
       dayButton.append(indicator);
+      dayButton.setAttribute(
+        "aria-label",
+        `${formatReadableDate(dateKey)}: ${entry.mood || "Recorded"}`,
+      );
     }
 
     calendarGrid.append(dayButton);

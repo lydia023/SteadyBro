@@ -267,17 +267,17 @@
             </div>
             <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Mood calendar"></div>
             <div class="calendar-legend" aria-label="Mood indicators">
-              <span><i class="mood-dot mood-dot--okay"></i>Okay</span>
-              <span><i class="mood-dot mood-dot--stressed"></i>Stressed</span>
-              <span><i class="mood-dot mood-dot--overwhelmed"></i>Overwhelmed</span>
+              <span>🙂 Okay</span>
+              <span>😐 Stressed</span>
+              <span>😣 Overwhelmed</span>
             </div>
           </div>
           <div class="monthly-summary">
             <p class="card-label" id="summary-month-label">This month</p>
             <div class="summary-counts">
-              <span><strong id="okay-count">0</strong> Okay</span>
-              <span><strong id="stressed-count">0</strong> Stressed</span>
-              <span><strong id="overwhelmed-count">0</strong> Overwhelmed</span>
+              <span>🙂 Okay: <strong id="okay-count">0</strong></span>
+              <span>😐 Stressed: <strong id="stressed-count">0</strong></span>
+              <span>😣 Overwhelmed: <strong id="overwhelmed-count">0</strong></span>
             </div>
           </section>
         </section>
@@ -333,8 +333,11 @@
           <section class="support-section message-card" aria-labelledby="opening-message-title">
             <div class="support-heading">
               <div>
-                <p class="card-label">Suggested opening message</p>
-                <h3 id="opening-message-title">You can use this as-is</h3>
+                <h3 id="opening-message-title">Talk it through with a friend</h3>
+                <p class="message-subheading">
+                  You don't have to go through it alone. Here's a quick message to help you start
+                  the chat.
+                </p>
               </div>
             </div>
             <p class="opening-message" id="opening-message">Hey, I've been having a rough time with ____. Got time to talk?</p>
