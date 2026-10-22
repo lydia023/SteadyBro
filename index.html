@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Quick Reset is a private digital reflection and support tool for Full-Time National Servicemen."
+    />
+    <title>Quick Reset</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">QR</span>
+          <div>
+            <p class="eyebrow">A private space for NSFs</p>
+            <h1>Quick Reset</h1>
+          </div>
+        </div>
+        <p class="header-date" id="header-date"></p>
+      </header>
+
+      <main class="page-content">
+        <section class="page active" id="daily-page" data-page="daily" aria-labelledby="daily-title">
+          <div class="page-intro">
+            <p class="section-kicker">Daily / Quick Reset</p>
+            <h2 id="daily-title">A moment to check in.</h2>
+            <p class="intro-copy">
+              Take a few quiet minutes for yourself, whether the day has been long or simply full.
+            </p>
+          </div>
+          <div class="placeholder-card">
+            <span class="card-label">Coming next</span>
+            <h3>Your daily reset will live here.</h3>
+            <p>
+              A simple, private space to pause and put down what is on your mind. No pressure to
+              write the “right” thing.
+            </p>
+          </div>
+        </section>
+
+        <section
+          class="page"
+          id="weekly-page"
+          data-page="weekly"
+          aria-labelledby="weekly-title"
+          hidden
+        >
+          <div class="page-intro">
+            <p class="section-kicker">Weekly Reflection</p>
+            <h2 id="weekly-title">Look back, at your own pace.</h2>
+            <p class="intro-copy">
+              Notice what has been taking up space this week and what has helped you get through it.
+            </p>
+          </div>
+          <div class="placeholder-card">
+            <span class="card-label">Coming next</span>
+            <h3>Your weekly reflection will live here.</h3>
+            <p>A few guided prompts will help you make sense of the week without overthinking it.</p>
+          </div>
+        </section>
+
+        <section
+          class="page"
+          id="calendar-page"
+          data-page="calendar"
+          aria-labelledby="calendar-title"
+          hidden
+        >
+          <div class="page-intro">
+            <p class="section-kicker">Mood Calendar</p>
+            <h2 id="calendar-title">See your patterns over time.</h2>
+            <p class="intro-copy">
+              A private, gentle view of your check-ins. You choose what to record and what to keep
+              to yourself.
+            </p>
+          </div>
+          <div class="placeholder-card">
+            <span class="card-label">Coming next</span>
+            <h3>Your mood calendar will live here.</h3>
+            <p>Over time, small check-ins can make changes and patterns easier to notice.</p>
+          </div>
+        </section>
+
+        <section
+          class="page"
+          id="support-page"
+          data-page="support"
+          aria-labelledby="support-title"
+          hidden
+        >
+          <div class="page-intro">
+            <p class="section-kicker">Support</p>
+            <h2 id="support-title">You do not have to carry it alone.</h2>
+            <p class="intro-copy">
+              Find a few grounded reminders and support options for difficult days.
+            </p>
+          </div>
+          <div class="placeholder-card">
+            <span class="card-label">Coming next</span>
+            <h3>Support resources will live here.</h3>
+            <p>Practical information and trusted places to reach out when you need extra support.</p>
+          </div>
+        </section>
+      </main>
+
+      <aside class="privacy-note" aria-label="Privacy information">
+        <span class="privacy-icon" aria-hidden="true">◌</span>
+        <p>Your journal information stays on this device and is not uploaded anywhere.</p>
+      </aside>
+
+      <nav class="bottom-nav" aria-label="Main navigation">
+        <button class="nav-item active" type="button" data-target="daily" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">✦</span>
+          <span>Daily</span>
+        </button>
+        <button class="nav-item" type="button" data-target="weekly">
+          <span class="nav-icon" aria-hidden="true">↻</span>
+          <span>Weekly</span>
+        </button>
+        <button class="nav-item" type="button" data-target="calendar">
+          <span class="nav-icon" aria-hidden="true">▦</span>
+          <span>Calendar</span>
+        </button>
+        <button class="nav-item" type="button" data-target="support">
+          <span class="nav-icon" aria-hidden="true">+</span>
+          <span>Support</span>
+        </button>
+      </nav>
+    </div>
+  </body>
+</html>
