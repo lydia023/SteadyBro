@@ -1,6 +1,6 @@
-# Quick Reset
+# Steady Bro
 
-Quick Reset is a mobile-first static web application for Full-Time National
+Steady Bro is a mobile-first static web application for National
 Servicemen (NSFs). It is designed as a private, discreet space for daily
 check-ins, weekly reflection, mood tracking and support.
 
