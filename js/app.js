@@ -22,9 +22,12 @@ const groundStepCount = document.querySelector("#ground-step-count");
 const groundTitle = document.querySelector("#ground-title");
 const groundPrompt = document.querySelector("#ground-prompt");
 const groundAnswer = document.querySelector("#ground-answer");
+const settingsPopover = document.querySelector("#settings-popover");
+const settingsStatus = document.querySelector("#settings-status");
 const dailyEntriesKey = "quickResetDailyEntries";
 const weeklyEntriesKey = "quickResetWeeklyEntries";
 const supportPlanKey = "quickResetSupportPlan";
+const appStorageKeys = [dailyEntriesKey, weeklyEntriesKey, supportPlanKey];
 let pendingDailyUpdate = null;
 let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let selectedCalendarEntry = null;
@@ -246,6 +249,51 @@ function readSupportPlan() {
 
 function writeSupportPlan(plan) {
   localStorage.setItem(supportPlanKey, JSON.stringify(plan));
+}
+
+function showSettingsStatus(message, type) {
+  settingsStatus.textContent = message;
+  settingsStatus.className = `form-status form-status--${type}`;
+}
+
+function confirmDataDeletion(message) {
+  return window.confirm(`${message}\n\nThis cannot be undone.`);
+}
+
+function removeStoredData(keys) {
+  try {
+    keys.forEach((key) => localStorage.removeItem(key));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function handleDataDeletion(keys, message) {
+  if (!confirmDataDeletion(message)) return;
+
+  if (removeStoredData(keys)) {
+    showSettingsStatus("Selected local data was deleted from this device.", "success");
+    if (keys.includes(dailyEntriesKey)) renderCalendar();
+    if (keys.includes(supportPlanKey)) renderCounsellorContactActions();
+  } else {
+    showSettingsStatus("The selected data could not be deleted.", "error");
+  }
+}
+
+function deleteTodaysEntry() {
+  if (!confirmDataDeletion("Delete today's Quick Reset entry?")) return;
+
+  const entries = readDailyEntries();
+  const remainingEntries = entries.filter((entry) => !entry || entry.date !== getTodayDate());
+
+  try {
+    writeDailyEntries(remainingEntries);
+    showSettingsStatus("Today's entry was deleted from this device.", "success");
+    renderCalendar();
+  } catch {
+    showSettingsStatus("Today's entry could not be deleted.", "error");
+  }
 }
 
 function normalisePhoneNumber(phone) {
@@ -628,6 +676,39 @@ document.querySelector("[data-ground-done]").addEventListener("click", closeGrou
 document.querySelector("[data-ground-close]").addEventListener("click", closeGroundingExercise);
 groundPopover.addEventListener("click", (event) => {
   if (event.target === groundPopover) closeGroundingExercise();
+});
+
+document.querySelector("[data-settings-open]").addEventListener("click", () => {
+  settingsPopover.hidden = false;
+  settingsPopover.querySelector("[data-settings-close]").focus();
+});
+
+document.querySelector("[data-settings-close]").addEventListener("click", () => {
+  settingsPopover.hidden = true;
+});
+
+settingsPopover.addEventListener("click", (event) => {
+  if (event.target === settingsPopover) settingsPopover.hidden = true;
+});
+
+document.querySelector("[data-delete-today]").addEventListener("click", () => {
+  deleteTodaysEntry();
+});
+
+document.querySelector("[data-delete-daily]").addEventListener("click", () => {
+  handleDataDeletion([dailyEntriesKey], "Delete all Daily Quick Reset entries?");
+});
+
+document.querySelector("[data-delete-weekly]").addEventListener("click", () => {
+  handleDataDeletion([weeklyEntriesKey], "Delete all Weekly Reflections?");
+});
+
+document.querySelector("[data-delete-support]").addEventListener("click", () => {
+  handleDataDeletion([supportPlanKey], "Delete all support-plan information?");
+});
+
+document.querySelector("[data-delete-all]").addEventListener("click", () => {
+  handleDataDeletion(appStorageKeys, "Delete ALL Quick Reset data stored on this device?");
 });
 
 supportPlanForm.querySelector(".support-save-button").addEventListener("click", saveSupportPlan);

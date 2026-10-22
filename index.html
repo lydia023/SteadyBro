@@ -21,7 +21,10 @@
             <h1>Quick Reset</h1>
           </div>
         </div>
-        <p class="header-date" id="header-date"></p>
+        <div class="header-actions">
+          <p class="header-date" id="header-date"></p>
+          <button class="settings-button" type="button" data-settings-open aria-label="Open Privacy and Data settings">⚙</button>
+        </div>
       </header>
 
       <main class="page-content">
@@ -430,6 +433,26 @@
           <button class="confirm-button confirm-button--primary" type="button" data-ground-next>Next</button>
           <button class="confirm-button confirm-button--primary" type="button" data-ground-done hidden>Done</button>
         </div>
+      </div>
+    </div>
+
+    <div class="settings-popover" id="settings-popover" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+      <div class="settings-popover__card">
+        <button class="info-close" type="button" data-settings-close aria-label="Close Privacy and Data settings">×</button>
+        <p class="card-label">Privacy &amp; Data</p>
+        <h3 id="settings-title">Your data stays with you.</h3>
+        <p class="settings-privacy-copy">
+          Your journal information is stored only in this browser on this device. It is not uploaded
+          to an account or server.
+        </p>
+        <div class="data-actions">
+          <button type="button" data-delete-today>Delete today's entry</button>
+          <button type="button" data-delete-daily>Delete all daily entries</button>
+          <button type="button" data-delete-weekly>Delete all weekly reflections</button>
+          <button type="button" data-delete-support>Delete support-plan information</button>
+          <button class="data-action--all" type="button" data-delete-all>Delete ALL local data</button>
+        </div>
+        <p class="form-status" id="settings-status" role="status" aria-live="polite"></p>
       </div>
     </div>
   </body>

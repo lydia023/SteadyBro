@@ -91,6 +91,32 @@ h1 {
   font-weight: 500;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.settings-button:hover,
+.settings-button:focus-visible {
+  background: var(--sage-soft);
+  color: var(--sage-dark);
+  outline: none;
+}
+
 .page {
   animation: page-in 260ms ease both;
 }
@@ -290,6 +316,10 @@ h1 {
 .done-button:focus-visible {
   background: var(--ink);
   outline: none;
+}
+
+.reset-form > .done-button {
+  margin-top: 12px;
 }
 
 .form-status {
@@ -706,6 +736,74 @@ h1 {
 .ground-actions [data-ground-next],
 .ground-actions [data-ground-done] {
   grid-column: 1 / -1;
+}
+
+.settings-popover {
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(38, 58, 58, 0.22);
+}
+
+.settings-popover__card {
+  width: min(100%, 350px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 22px 18px 17px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.settings-popover__card h3 {
+  margin: 9px 0 8px;
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.settings-privacy-copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.data-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 21px;
+}
+
+.data-actions button {
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+  text-align: left;
+}
+
+.data-actions button:hover,
+.data-actions button:focus-visible {
+  border-color: var(--sage);
+  background: var(--sage-soft);
+  outline: none;
+}
+
+.data-actions .data-action--all {
+  margin-top: 6px;
+  border-color: #b99a9e;
+  color: #815e64;
 }
 
 .support-card,
