@@ -234,10 +234,29 @@
               to yourself.
             </p>
           </div>
-          <div class="placeholder-card">
-            <span class="card-label">Coming next</span>
-            <h3>Your mood calendar will live here.</h3>
-            <p>Over time, small check-ins can make changes and patterns easier to notice.</p>
+          <div class="calendar-card" id="mood-calendar">
+            <div class="calendar-toolbar">
+              <button class="month-button" type="button" id="previous-month">Previous Month</button>
+              <h3 id="calendar-month-label"></h3>
+              <button class="month-button" type="button" id="next-month">Next Month</button>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="calendar-grid" id="calendar-grid" role="grid" aria-label="Mood calendar"></div>
+            <div class="calendar-legend" aria-label="Mood indicators">
+              <span><i class="mood-dot mood-dot--okay"></i>Okay</span>
+              <span><i class="mood-dot mood-dot--stressed"></i>Stressed</span>
+              <span><i class="mood-dot mood-dot--overwhelmed"></i>Overwhelmed</span>
+            </div>
+          </div>
+          <div class="monthly-summary">
+            <p class="card-label" id="summary-month-label">This month</p>
+            <div class="summary-counts">
+              <span><strong id="okay-count">0</strong> Okay</span>
+              <span><strong id="stressed-count">0</strong> Stressed</span>
+              <span><strong id="overwhelmed-count">0</strong> Overwhelmed</span>
+            </div>
           </div>
         </section>
 
@@ -303,6 +322,25 @@
         <div class="confirm-actions">
           <button class="confirm-button confirm-button--secondary" type="button" data-update-cancel>Not now</button>
           <button class="confirm-button confirm-button--primary" type="button" data-update-confirm>Update</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="calendar-popover" id="entry-popover" role="dialog" aria-modal="true" aria-labelledby="entry-title" hidden>
+      <div class="entry-popover__card">
+        <button class="info-close" type="button" data-entry-close aria-label="Close entry summary">×</button>
+        <p class="card-label">Daily check-in</p>
+        <h3 id="entry-title"></h3>
+        <dl class="entry-summary">
+          <dt>Mood</dt><dd id="entry-mood"></dd>
+          <dt>What's on my mind?</dt><dd id="entry-thought"></dd>
+          <dt>Signs</dt><dd id="entry-signs"></dd>
+          <dt>Coping needs</dt><dd id="entry-needs"></dd>
+          <dt>Next action</dt><dd id="entry-action"></dd>
+        </dl>
+        <div class="entry-actions">
+          <button class="confirm-button confirm-button--secondary" type="button" data-entry-delete>Delete Entry</button>
+          <button class="confirm-button confirm-button--primary" type="button" data-entry-edit>Edit Entry</button>
         </div>
       </div>
     </div>

@@ -8,9 +8,17 @@ const quickResetStatus = document.querySelector("#quick-reset-status");
 const weeklyReflectionForm = document.querySelector("#weekly-reflection-form");
 const weeklyReflectionStatus = document.querySelector("#weekly-reflection-status");
 const updatePopover = document.querySelector("#update-popover");
+const calendarGrid = document.querySelector("#calendar-grid");
+const calendarMonthLabel = document.querySelector("#calendar-month-label");
+const summaryMonthLabel = document.querySelector("#summary-month-label");
+const entryPopover = document.querySelector("#entry-popover");
 const dailyEntriesKey = "quickResetDailyEntries";
 const weeklyEntriesKey = "quickResetWeeklyEntries";
 let pendingDailyUpdate = null;
+let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let selectedCalendarEntry = null;
+let editingDailyEntryId = null;
+let editingDailyEntryDate = null;
 
 const infoCopy = {
   mind: "Naming one thing can make it feel a little less noisy. You do not need to explain it perfectly.",
@@ -46,6 +54,132 @@ function readDailyEntries() {
 
 function writeDailyEntries(entries) {
   localStorage.setItem(dailyEntriesKey, JSON.stringify(entries));
+}
+
+function formatDateKey(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function formatReadableDate(dateKey) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return new Intl.DateTimeFormat("en-SG", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(year, month - 1, day));
+}
+
+function getCalendarEntries() {
+  return readDailyEntries().filter((entry) => entry && /^\d{4}-\d{2}-\d{2}$/.test(entry.date));
+}
+
+function renderCalendar() {
+  if (!calendarGrid) return;
+
+  const entries = getCalendarEntries();
+  const entriesByDate = new Map(entries.map((entry) => [entry.date, entry]));
+  const monthStart = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+  const firstDayOffset = (monthStart.getDay() + 6) % 7;
+  const gridStart = new Date(monthStart);
+  gridStart.setDate(1 - firstDayOffset);
+  const monthName = new Intl.DateTimeFormat("en-SG", { month: "long", year: "numeric" }).format(monthStart);
+
+  calendarMonthLabel.textContent = monthName;
+  summaryMonthLabel.textContent = monthName;
+  calendarGrid.innerHTML = "";
+
+  for (let index = 0; index < 42; index += 1) {
+    const date = new Date(gridStart);
+    date.setDate(gridStart.getDate() + index);
+    const dateKey = formatDateKey(date);
+    const entry = entriesByDate.get(dateKey);
+    const dayButton = document.createElement("button");
+    dayButton.type = "button";
+    dayButton.className = "calendar-day";
+    dayButton.setAttribute("role", "gridcell");
+    dayButton.dataset.date = dateKey;
+    dayButton.disabled = !entry;
+    if (date.getMonth() !== monthStart.getMonth()) dayButton.classList.add("calendar-day--outside");
+    if (dateKey === getTodayDate()) dayButton.classList.add("calendar-day--today");
+    dayButton.innerHTML = `<span>${date.getDate()}</span>`;
+
+    if (entry) {
+      const indicator = document.createElement("i");
+      indicator.className = `mood-dot mood-dot--${entry.mood}`;
+      indicator.setAttribute("aria-label", entry.mood || "Recorded");
+      dayButton.append(indicator);
+    }
+
+    calendarGrid.append(dayButton);
+  }
+
+  const monthlyEntries = entries.filter((entry) => entry.date.startsWith(
+    `${calendarDate.getFullYear()}-${String(calendarDate.getMonth() + 1).padStart(2, "0")}`,
+  ));
+  ["okay", "stressed", "overwhelmed"].forEach((mood) => {
+    document.querySelector(`#${mood}-count`).textContent =
+      monthlyEntries.filter((entry) => entry.mood === mood).length;
+  });
+}
+
+function closeEntryPopover() {
+  entryPopover.hidden = true;
+  selectedCalendarEntry = null;
+}
+
+function showEntryPopover(entry) {
+  selectedCalendarEntry = entry;
+  document.querySelector("#entry-title").textContent = formatReadableDate(entry.date);
+  document.querySelector("#entry-mood").textContent = entry.mood || "Not recorded";
+  document.querySelector("#entry-thought").textContent = entry.oneLineThought || "None recorded";
+  document.querySelector("#entry-signs").textContent = entry.signs?.join(", ") || "None recorded";
+  document.querySelector("#entry-needs").textContent =
+    [...(entry.needs || []), entry.otherNeed].filter(Boolean).join(", ") || "None recorded";
+  document.querySelector("#entry-action").textContent = entry.tomorrowAction || "None recorded";
+  entryPopover.hidden = false;
+  entryPopover.querySelector("[data-entry-edit]").focus();
+}
+
+function editDailyEntry(entry) {
+  editingDailyEntryId = entry.id;
+  editingDailyEntryDate = entry.date;
+  document.querySelector("#mind-input").value = entry.oneLineThought || "";
+  document.querySelector("#tomorrow-input").value = entry.tomorrowAction || "";
+  document.querySelector("#other-need").value = entry.otherNeed || "";
+  document.querySelectorAll(".choice-button").forEach((button) => {
+    const group = button.dataset.group;
+    const value = button.textContent.trim();
+    let selected = false;
+    if (group === "mood") selected = value.toLowerCase() === entry.mood;
+    if (group === "am-i") selected = (entry.signs || []).includes(value);
+    if (group === "need") selected = (entry.needs || []).includes(value) || (value === "Other" && entry.otherNeed);
+    if (group === "support") selected = value.toLowerCase().startsWith(entry.supportNeed || "never");
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  document.querySelector("#other-need").hidden = !entry.otherNeed;
+  closeEntryPopover();
+  showPage("daily");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function deleteDailyEntry(entry) {
+  if (!window.confirm("Delete this Quick Reset entry?")) return;
+  const entries = readDailyEntries().filter((item) => item && item.id !== entry.id);
+  try {
+    writeDailyEntries(entries);
+    editingDailyEntryId = null;
+    editingDailyEntryDate = null;
+    closeEntryPopover();
+    renderCalendar();
+  } catch {
+    document.querySelector("#entry-title").textContent = "This entry could not be deleted.";
+  }
 }
 
 function getWeekStartDate() {
@@ -129,8 +263,8 @@ function createDailyEntry() {
   const selectedSupport = document.querySelector('.choice-button[data-group="support"].selected');
 
   return {
-    id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    date: getTodayDate(),
+    id: editingDailyEntryId || globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    date: editingDailyEntryDate || getTodayDate(),
     timestamp: new Date().toISOString(),
     oneLineThought: document.querySelector("#mind-input").value.trim(),
     mood: selectedMood?.textContent.trim().toLowerCase(),
@@ -219,6 +353,7 @@ function setCurrentDate() {
 navItems.forEach((item) => {
   item.addEventListener("click", () => {
     showPage(item.dataset.target);
+    if (item.dataset.target === "calendar") renderCalendar();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 });
@@ -301,5 +436,34 @@ updatePopover.addEventListener("click", (event) => {
   }
 });
 
+document.querySelector("#previous-month").addEventListener("click", () => {
+  calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+  renderCalendar();
+});
+
+document.querySelector("#next-month").addEventListener("click", () => {
+  calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
+  renderCalendar();
+});
+
+calendarGrid.addEventListener("click", (event) => {
+  const dayButton = event.target.closest(".calendar-day");
+  if (!dayButton || dayButton.disabled) return;
+  const entry = getCalendarEntries().find((item) => item.date === dayButton.dataset.date);
+  if (entry) showEntryPopover(entry);
+});
+
+entryPopover.querySelector("[data-entry-close]").addEventListener("click", closeEntryPopover);
+entryPopover.querySelector("[data-entry-edit]").addEventListener("click", () => {
+  if (selectedCalendarEntry) editDailyEntry(selectedCalendarEntry);
+});
+entryPopover.querySelector("[data-entry-delete]").addEventListener("click", () => {
+  if (selectedCalendarEntry) deleteDailyEntry(selectedCalendarEntry);
+});
+entryPopover.addEventListener("click", (event) => {
+  if (event.target === entryPopover) closeEntryPopover();
+});
+
 setCurrentDate();
 showPage("daily");
+renderCalendar();
