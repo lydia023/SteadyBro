@@ -33,14 +33,124 @@
               Take a few quiet minutes for yourself, whether the day has been long or simply full.
             </p>
           </div>
-          <div class="placeholder-card">
-            <span class="card-label">Coming next</span>
-            <h3>Your daily reset will live here.</h3>
-            <p>
-              A simple, private space to pause and put down what is on your mind. No pressure to
-              write the “right” thing.
-            </p>
-          </div>
+          <form class="reset-form" id="quick-reset-form">
+            <fieldset class="reset-section">
+              <legend>
+                <span>1. In one line only: What's on my mind?</span>
+                <button class="info-button" type="button" data-info="mind" aria-label="Why this helps">i</button>
+              </legend>
+              <input
+                id="mind-input"
+                name="mind"
+                type="text"
+                maxlength="120"
+                placeholder="One thing is enough."
+                autocomplete="off"
+              />
+            </fieldset>
+
+            <fieldset class="reset-section">
+              <legend>
+                <span>2. How am I doing right now?</span>
+                <button class="info-button" type="button" data-info="mood" aria-label="Why this helps">i</button>
+              </legend>
+              <div class="choice-grid choice-grid--three" role="group" aria-label="Current mood">
+                <button class="choice-button" type="button" data-group="mood" aria-pressed="false">Okay</button>
+                <button class="choice-button" type="button" data-group="mood" aria-pressed="false">Stressed</button>
+                <button class="choice-button" type="button" data-group="mood" aria-pressed="false">Overwhelmed</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="reset-section">
+              <legend>
+                <span>3. Am I...</span>
+                <button class="info-button" type="button" data-info="am-i" aria-label="Why this helps">i</button>
+              </legend>
+              <div class="choice-stack">
+                <button class="choice-button choice-button--left" type="button" data-group="am-i" aria-pressed="false">
+                  Stuck thinking about one thing
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="am-i" aria-pressed="false">
+                  Withdrawing from people
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="am-i" aria-pressed="false">
+                  Just tired — I'm okay
+                </button>
+              </div>
+            </fieldset>
+
+            <fieldset class="reset-section">
+              <legend>
+                <span>4. What do I need right now?</span>
+                <button class="info-button" type="button" data-info="need" aria-label="Why this helps">i</button>
+              </legend>
+              <div class="choice-stack">
+                <button class="choice-button choice-button--left" type="button" data-group="need" aria-pressed="false">
+                  Write — get it out of my head
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="need" aria-pressed="false">
+                  Move — exercise/stretch
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="need" aria-pressed="false">
+                  Breathe / ground myself
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="need" aria-pressed="false">
+                  Talk — contact someone I trust
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="need" aria-pressed="false">
+                  Rest
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="need" data-other-choice aria-pressed="false">
+                  Other
+                </button>
+              </div>
+              <input
+                class="conditional-input"
+                id="other-need"
+                name="other-need"
+                type="text"
+                maxlength="80"
+                placeholder="What else do you need?"
+                hidden
+              />
+            </fieldset>
+
+            <fieldset class="reset-section">
+              <legend>
+                <span>5. The one thing I'll do tomorrow is:</span>
+                <button class="info-button" type="button" data-info="tomorrow" aria-label="Why this helps">i</button>
+              </legend>
+              <input
+                id="tomorrow-input"
+                name="tomorrow"
+                type="text"
+                maxlength="120"
+                placeholder="Keep it small and doable."
+                autocomplete="off"
+              />
+            </fieldset>
+
+            <fieldset class="reset-section">
+              <legend>
+                <span>6. Do I need someone else?</span>
+                <button class="info-button" type="button" data-info="support" aria-label="Why this helps">i</button>
+              </legend>
+              <div class="choice-stack">
+                <button class="choice-button choice-button--left" type="button" data-group="support" aria-pressed="false">
+                  No — I'm okay for now
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="support" aria-pressed="false">
+                  Maybe — I'll check again later
+                </button>
+                <button class="choice-button choice-button--left" type="button" data-group="support" data-support-yes aria-pressed="false">
+                  Yes — use my support card
+                </button>
+              </div>
+              <a class="support-prompt" href="#" data-support-link hidden>Still struggling? <span>→ Open Support</span></a>
+            </fieldset>
+
+            <button class="done-button" type="button">Done</button>
+          </form>
         </section>
 
         <section
@@ -131,6 +241,14 @@
           <span>Support</span>
         </button>
       </nav>
+    </div>
+
+    <div class="info-popover" id="info-popover" role="dialog" aria-modal="false" aria-labelledby="info-title" hidden>
+      <div class="info-popover__card">
+        <button class="info-close" type="button" aria-label="Close explanation">×</button>
+        <p class="card-label">A quick note</p>
+        <p id="info-title"></p>
+      </div>
     </div>
   </body>
 </html>
