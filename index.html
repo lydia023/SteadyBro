@@ -150,6 +150,7 @@
             </fieldset>
 
             <button class="done-button" type="button">Done</button>
+            <p class="form-status" id="quick-reset-status" role="status" aria-live="polite"></p>
           </form>
         </section>
 
@@ -248,6 +249,17 @@
         <button class="info-close" type="button" aria-label="Close explanation">×</button>
         <p class="card-label">A quick note</p>
         <p id="info-title"></p>
+      </div>
+    </div>
+
+    <div class="confirm-popover" id="update-popover" role="dialog" aria-modal="true" aria-labelledby="update-title" hidden>
+      <div class="confirm-popover__card">
+        <p class="card-label">Today's Quick Reset</p>
+        <p id="update-title">You already have a Quick Reset today. Would you like to update it?</p>
+        <div class="confirm-actions">
+          <button class="confirm-button confirm-button--secondary" type="button" data-update-cancel>Not now</button>
+          <button class="confirm-button confirm-button--primary" type="button" data-update-confirm>Update</button>
+        </div>
       </div>
     </div>
   </body>

@@ -292,6 +292,22 @@ h1 {
   outline: none;
 }
 
+.form-status {
+  min-height: 21px;
+  margin: 13px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.form-status--success {
+  color: var(--sage-dark);
+}
+
+.form-status--error {
+  color: #a45151;
+}
+
 .info-popover {
   position: fixed;
   inset: 0;
@@ -428,6 +444,62 @@ h1 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.confirm-popover {
+  position: fixed;
+  inset: 0;
+  z-index: 21;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(38, 58, 58, 0.22);
+}
+
+.confirm-popover__card {
+  width: min(100%, 300px);
+  padding: 21px 18px 17px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.confirm-popover__card > p:nth-child(2) {
+  margin: 10px 0 17px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.confirm-button {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.confirm-button--secondary {
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.confirm-button--primary {
+  border-color: var(--sage-dark);
+  background: var(--sage-dark);
+  color: #fff;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 @media (min-width: 721px) {
