@@ -16,6 +16,7 @@ const summaryMonthLabel = document.querySelector("#summary-month-label");
 const entryPopover = document.querySelector("#entry-popover");
 const supportPlanForm = document.querySelector("#support-plan-form");
 const supportPlanStatus = document.querySelector("#support-plan-status");
+const supportSavePopover = document.querySelector("#support-save-popover");
 const counsellorContactActions = document.querySelector("#counsellor-contact-actions");
 const copyMessageButton = document.querySelector("#copy-message-button");
 const copyMessageStatus = document.querySelector("#copy-message-status");
@@ -381,8 +382,9 @@ function saveSupportPlan() {
   try {
     writeSupportPlan(plan);
     renderCounsellorContactActions();
-    supportPlanStatus.textContent = "Counsellor details saved on this device.";
-    supportPlanStatus.className = "form-status form-status--success";
+    supportPlanStatus.textContent = "";
+    supportSavePopover.hidden = false;
+    supportSavePopover.querySelector("[data-support-save-close]").focus();
   } catch {
     supportPlanStatus.textContent = "Counsellor details could not be saved on this device.";
     supportPlanStatus.className = "form-status form-status--error";
@@ -818,6 +820,14 @@ document.querySelector("[data-settings-close]").addEventListener("click", () => 
 
 settingsPopover.addEventListener("click", (event) => {
   if (event.target === settingsPopover) settingsPopover.hidden = true;
+});
+
+supportSavePopover.querySelector("[data-support-save-close]").addEventListener("click", () => {
+  supportSavePopover.hidden = true;
+});
+
+supportSavePopover.addEventListener("click", (event) => {
+  if (event.target === supportSavePopover) supportSavePopover.hidden = true;
 });
 
 document.querySelector("[data-delete-today]").addEventListener("click", () => {

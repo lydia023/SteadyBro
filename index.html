@@ -15,10 +15,10 @@
     <div class="app-shell">
       <header class="site-header">
         <div class="brand-lockup">
-          <span class="brand-mark" aria-hidden="true">QR</span>
+          <img class="brand-logo" src="assets/SteadyBroLogo.png" alt="SteadyBro logo" />
           <div>
             <p class="eyebrow">A private space for NSFs</p>
-            <h1>Quick Reset</h1>
+            <h1>SteadyBro</h1>
           </div>
         </div>
         <div class="header-actions">
@@ -171,10 +171,25 @@
             <p class="intro-copy">
               Notice what has been taking up space this week and what has helped you get through it.
             </p>
-            <button class="past-reflections-toggle" type="button" id="past-reflections-toggle" aria-expanded="false">
+            <button
+              class="past-reflections-toggle"
+              type="button"
+              id="past-reflections-toggle"
+              aria-expanded="false"
+              aria-controls="past-reflections"
+            >
               View Past Reflections ↓
             </button>
           </div>
+          <section class="past-reflections" id="past-reflections" aria-labelledby="past-reflections-title" hidden>
+            <div class="past-reflections-heading">
+              <div>
+                <p class="section-kicker">Your history</p>
+                <h3 id="past-reflections-title">Past Weekly Reflections</h3>
+              </div>
+            </div>
+            <div class="past-reflection-list" id="past-reflection-list"></div>
+          </section>
           <form class="reflection-form" id="weekly-reflection-form">
             <div class="reflection-prompt">
               <label for="repeating-thoughts">1. What thoughts keep going round my head this week?</label>
@@ -224,15 +239,6 @@
             <button class="done-button" type="button">Save Reflection</button>
             <p class="form-status" id="weekly-reflection-status" role="status" aria-live="polite"></p>
           </form>
-          <section class="past-reflections" id="past-reflections" aria-labelledby="past-reflections-title" hidden>
-            <div class="past-reflections-heading">
-              <div>
-                <p class="section-kicker">Your history</p>
-                <h3 id="past-reflections-title">Past Weekly Reflections</h3>
-              </div>
-            </div>
-            <div class="past-reflection-list" id="past-reflection-list"></div>
-          </section>
         </section>
 
         <section
@@ -418,6 +424,16 @@
         <div class="confirm-actions">
           <button class="confirm-button confirm-button--secondary" type="button" data-delete-cancel>Not now</button>
           <button class="confirm-button confirm-button--primary" type="button" data-delete-confirm>Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-popover" id="support-save-popover" role="dialog" aria-modal="true" aria-labelledby="support-save-title" hidden>
+      <div class="confirm-popover__card">
+        <p class="card-label">My counsellor</p>
+        <p id="support-save-title">Counsellor details saved on this device.</p>
+        <div class="confirm-actions">
+          <button class="confirm-button confirm-button--primary" type="button" data-support-save-close>Okay</button>
         </div>
       </div>
     </div>
