@@ -8,6 +8,8 @@ const quickResetStatus = document.querySelector("#quick-reset-status");
 const weeklyReflectionForm = document.querySelector("#weekly-reflection-form");
 const weeklyReflectionStatus = document.querySelector("#weekly-reflection-status");
 const updatePopover = document.querySelector("#update-popover");
+const deletePopover = document.querySelector("#delete-popover");
+const deleteTitle = document.querySelector("#delete-title");
 const calendarGrid = document.querySelector("#calendar-grid");
 const calendarMonthLabel = document.querySelector("#calendar-month-label");
 const summaryMonthLabel = document.querySelector("#summary-month-label");
@@ -17,6 +19,9 @@ const supportPlanStatus = document.querySelector("#support-plan-status");
 const counsellorContactActions = document.querySelector("#counsellor-contact-actions");
 const copyMessageButton = document.querySelector("#copy-message-button");
 const copyMessageStatus = document.querySelector("#copy-message-status");
+const pastReflectionsToggle = document.querySelector("#past-reflections-toggle");
+const pastReflections = document.querySelector("#past-reflections");
+const pastReflectionList = document.querySelector("#past-reflection-list");
 const groundPopover = document.querySelector("#ground-popover");
 const groundStepCount = document.querySelector("#ground-step-count");
 const groundTitle = document.querySelector("#ground-title");
@@ -29,12 +34,38 @@ const weeklyEntriesKey = "quickResetWeeklyEntries";
 const supportPlanKey = "quickResetSupportPlan";
 const appStorageKeys = [dailyEntriesKey, weeklyEntriesKey, supportPlanKey];
 let pendingDailyUpdate = null;
+let pendingDeletion = null;
 let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let selectedCalendarEntry = null;
 let editingDailyEntryId = null;
 let editingDailyEntryDate = null;
 let groundStepIndex = 0;
 let groundAnswers = [];
+let expandedPastReflection = null;
+const mockPastReflections = [
+  {
+    weekStart: "2026-10-12",
+    repeatingThoughts: "I kept thinking about whether I am doing enough during training.",
+    proudOf: "I got through a demanding week and still showed up.",
+    selfCare: "I took one evening to rest without feeling guilty.",
+    wishDifferent: "I wish I had asked for a little help earlier.",
+    feeling: "Tired, but more settled by the end of the week.",
+    controllable: "How I speak to myself and whether I take the next small step.",
+    matters: "The people I care about and becoming more steady.",
+    friendAdvice: "You do not have to handle the whole week at once.",
+  },
+  {
+    weekStart: "2026-10-05",
+    repeatingThoughts: "I was replaying one conversation and wondering if I said the wrong thing.",
+    proudOf: "I kept my routine even on a low-energy day.",
+    selfCare: "I went for a short walk after dinner.",
+    wishDifferent: "I wish I had put my phone down earlier at night.",
+    feeling: "",
+    controllable: "",
+    matters: "",
+    friendAdvice: "",
+  },
+];
 const groundSteps = [
   ["5 things I can see", "Name five things you can see around you."],
   ["4 things I can touch", "Notice four things you can touch or feel."],
@@ -73,6 +104,13 @@ function readDailyEntries() {
   } catch {
     return [];
   }
+}
+
+function requestDeletionConfirmation(message, action) {
+  pendingDeletion = action;
+  deleteTitle.textContent = `${message} This cannot be undone.`;
+  deletePopover.hidden = false;
+  deletePopover.querySelector("[data-delete-confirm]").focus();
 }
 
 function writeDailyEntries(entries) {
@@ -192,17 +230,18 @@ function editDailyEntry(entry) {
 }
 
 function deleteDailyEntry(entry) {
-  if (!window.confirm("Delete this Quick Reset entry?")) return;
-  const entries = readDailyEntries().filter((item) => item && item.id !== entry.id);
-  try {
-    writeDailyEntries(entries);
-    editingDailyEntryId = null;
-    editingDailyEntryDate = null;
-    closeEntryPopover();
-    renderCalendar();
-  } catch {
-    document.querySelector("#entry-title").textContent = "This entry could not be deleted.";
-  }
+  requestDeletionConfirmation("Delete this Quick Reset entry?", () => {
+    const entries = readDailyEntries().filter((item) => item && item.id !== entry.id);
+    try {
+      writeDailyEntries(entries);
+      editingDailyEntryId = null;
+      editingDailyEntryDate = null;
+      closeEntryPopover();
+      renderCalendar();
+    } catch {
+      document.querySelector("#entry-title").textContent = "This entry could not be deleted.";
+    }
+  });
 }
 
 function getWeekStartDate() {
@@ -256,10 +295,6 @@ function showSettingsStatus(message, type) {
   settingsStatus.className = `form-status form-status--${type}`;
 }
 
-function confirmDataDeletion(message) {
-  return window.confirm(`${message}\n\nThis cannot be undone.`);
-}
-
 function removeStoredData(keys) {
   try {
     keys.forEach((key) => localStorage.removeItem(key));
@@ -269,9 +304,7 @@ function removeStoredData(keys) {
   }
 }
 
-function handleDataDeletion(keys, message) {
-  if (!confirmDataDeletion(message)) return;
-
+function performStoredDataDeletion(keys) {
   if (removeStoredData(keys)) {
     showSettingsStatus("Selected local data was deleted from this device.", "success");
     if (keys.includes(dailyEntriesKey)) renderCalendar();
@@ -281,9 +314,7 @@ function handleDataDeletion(keys, message) {
   }
 }
 
-function deleteTodaysEntry() {
-  if (!confirmDataDeletion("Delete today's Quick Reset entry?")) return;
-
+function deleteTodaysEntryConfirmed() {
   const entries = readDailyEntries();
   const remainingEntries = entries.filter((entry) => !entry || entry.date !== getTodayDate());
 
@@ -412,6 +443,95 @@ function saveWeeklyReflection() {
   } catch {
     showWeeklyStatus("This reflection could not be saved on this device.", "error");
   }
+}
+
+function getWeekDateRange(weekStart) {
+  const [year, month, day] = weekStart.split("-").map(Number);
+  const start = new Date(year, month - 1, day);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  const startLabel = start.toLocaleDateString("en-SG", { day: "numeric", month: "short" });
+  const endLabel = end.toLocaleDateString("en-SG", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  return `${startLabel}–${endLabel}`;
+}
+
+function createReflectionAnswer(label, answer) {
+  if (!answer) return "";
+  const wrapper = document.createElement("div");
+  wrapper.className = "past-reflection-answer";
+  const heading = document.createElement("dt");
+  heading.textContent = label;
+  const content = document.createElement("dd");
+  content.textContent = answer;
+  wrapper.append(heading, content);
+  return wrapper;
+}
+
+function renderPastReflections() {
+  pastReflectionList.innerHTML = "";
+
+  if (mockPastReflections.length === 0) {
+    pastReflectionList.innerHTML =
+      "<p class=\"empty-reflections\">No past reflections yet. Your weekly reflections will appear here.</p>";
+    return;
+  }
+
+  mockPastReflections.forEach((reflection, index) => {
+    const card = document.createElement("article");
+    card.className = "past-reflection-card";
+    const isExpanded = expandedPastReflection === index;
+    card.classList.toggle("is-expanded", isExpanded);
+
+    const button = document.createElement("button");
+    button.className = "past-reflection-summary";
+    button.type = "button";
+    button.setAttribute("aria-expanded", String(isExpanded));
+    button.innerHTML = `
+      <span>
+        <strong>${getWeekDateRange(reflection.weekStart)}</strong>
+        <span>${reflection.repeatingThoughts}</span>
+      </span>
+      <span class="past-reflection-chevron" aria-hidden="true">⌄</span>
+    `;
+    button.addEventListener("click", () => {
+      expandedPastReflection = isExpanded ? null : index;
+      renderPastReflections();
+    });
+    card.append(button);
+
+    if (isExpanded) {
+      const details = document.createElement("div");
+      details.className = "past-reflection-details";
+      const answers = document.createElement("dl");
+      [
+        ["What thoughts keep going round my head this week?", reflection.repeatingThoughts],
+        ["What am I proud of myself for this week?", reflection.proudOf],
+        ["One thing I did for myself this week", reflection.selfCare],
+        ["What is something I wish I did differently?", reflection.wishDifferent],
+        ["What am I feeling?", reflection.feeling],
+        ["What can I control right now?", reflection.controllable],
+        ["What matters to me beyond this problem?", reflection.matters],
+        ["One thing I would say to a friend going through the same thing", reflection.friendAdvice],
+      ].forEach(([label, answer]) => {
+        const answerElement = createReflectionAnswer(label, answer);
+        if (answerElement) answers.append(answerElement);
+      });
+      const actions = document.createElement("div");
+      actions.className = "past-reflection-actions";
+      actions.innerHTML = `
+        <button class="reflection-action reflection-action--edit" type="button">Edit</button>
+        <button class="reflection-action reflection-action--delete" type="button">Delete</button>
+      `;
+      details.append(answers, actions);
+      card.append(details);
+    }
+
+    pastReflectionList.append(card);
+  });
 }
 
 function renderGroundStep() {
@@ -593,6 +713,15 @@ document.querySelector("[data-support-link]").addEventListener("click", (event) 
 
 quickResetForm.querySelector(".done-button").addEventListener("click", saveDailyEntry);
 weeklyReflectionForm.querySelector(".done-button").addEventListener("click", saveWeeklyReflection);
+pastReflectionsToggle.addEventListener("click", () => {
+  const willShow = pastReflections.hidden;
+  pastReflections.hidden = !willShow;
+  pastReflectionsToggle.setAttribute("aria-expanded", String(willShow));
+  if (willShow) {
+    renderPastReflections();
+    pastReflections.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
 
 updatePopover.querySelector("[data-update-confirm]").addEventListener("click", () => {
   if (pendingDailyUpdate) {
@@ -692,23 +821,49 @@ settingsPopover.addEventListener("click", (event) => {
 });
 
 document.querySelector("[data-delete-today]").addEventListener("click", () => {
-  deleteTodaysEntry();
+  requestDeletionConfirmation("Delete today's Quick Reset entry?", deleteTodaysEntryConfirmed);
 });
 
 document.querySelector("[data-delete-daily]").addEventListener("click", () => {
-  handleDataDeletion([dailyEntriesKey], "Delete all Daily Quick Reset entries?");
+  requestDeletionConfirmation("Delete all Daily Quick Reset entries?", () => {
+    performStoredDataDeletion([dailyEntriesKey]);
+  });
 });
 
 document.querySelector("[data-delete-weekly]").addEventListener("click", () => {
-  handleDataDeletion([weeklyEntriesKey], "Delete all Weekly Reflections?");
+  requestDeletionConfirmation("Delete all Weekly Reflections?", () => {
+    performStoredDataDeletion([weeklyEntriesKey]);
+  });
 });
 
 document.querySelector("[data-delete-support]").addEventListener("click", () => {
-  handleDataDeletion([supportPlanKey], "Delete all support-plan information?");
+  requestDeletionConfirmation("Delete all support-plan information?", () => {
+    performStoredDataDeletion([supportPlanKey]);
+  });
 });
 
 document.querySelector("[data-delete-all]").addEventListener("click", () => {
-  handleDataDeletion(appStorageKeys, "Delete ALL Quick Reset data stored on this device?");
+  requestDeletionConfirmation("Delete ALL Quick Reset data stored on this device?", () => {
+    performStoredDataDeletion(appStorageKeys);
+  });
+});
+
+deletePopover.querySelector("[data-delete-confirm]").addEventListener("click", () => {
+  if (pendingDeletion) pendingDeletion();
+  pendingDeletion = null;
+  deletePopover.hidden = true;
+});
+
+deletePopover.querySelector("[data-delete-cancel]").addEventListener("click", () => {
+  pendingDeletion = null;
+  deletePopover.hidden = true;
+});
+
+deletePopover.addEventListener("click", (event) => {
+  if (event.target === deletePopover) {
+    pendingDeletion = null;
+    deletePopover.hidden = true;
+  }
 });
 
 supportPlanForm.querySelector(".support-save-button").addEventListener("click", saveSupportPlan);

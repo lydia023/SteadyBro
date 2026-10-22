@@ -171,6 +171,9 @@
             <p class="intro-copy">
               Notice what has been taking up space this week and what has helped you get through it.
             </p>
+            <button class="past-reflections-toggle" type="button" id="past-reflections-toggle" aria-expanded="false">
+              View Past Reflections ↓
+            </button>
           </div>
           <form class="reflection-form" id="weekly-reflection-form">
             <div class="reflection-prompt">
@@ -221,6 +224,15 @@
             <button class="done-button" type="button">Save Reflection</button>
             <p class="form-status" id="weekly-reflection-status" role="status" aria-live="polite"></p>
           </form>
+          <section class="past-reflections" id="past-reflections" aria-labelledby="past-reflections-title" hidden>
+            <div class="past-reflections-heading">
+              <div>
+                <p class="section-kicker">Your history</p>
+                <h3 id="past-reflections-title">Past Weekly Reflections</h3>
+              </div>
+            </div>
+            <div class="past-reflection-list" id="past-reflection-list"></div>
+          </section>
         </section>
 
         <section
@@ -395,6 +407,17 @@
         <div class="confirm-actions">
           <button class="confirm-button confirm-button--secondary" type="button" data-update-cancel>Not now</button>
           <button class="confirm-button confirm-button--primary" type="button" data-update-confirm>Update</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-popover" id="delete-popover" role="dialog" aria-modal="true" aria-labelledby="delete-title" hidden>
+      <div class="confirm-popover__card">
+        <p class="card-label">Privacy &amp; Data</p>
+        <p id="delete-title"></p>
+        <div class="confirm-actions">
+          <button class="confirm-button confirm-button--secondary" type="button" data-delete-cancel>Not now</button>
+          <button class="confirm-button confirm-button--primary" type="button" data-delete-confirm>Delete</button>
         </div>
       </div>
     </div>
