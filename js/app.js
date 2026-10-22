@@ -17,6 +17,11 @@ const supportPlanStatus = document.querySelector("#support-plan-status");
 const counsellorContactActions = document.querySelector("#counsellor-contact-actions");
 const copyMessageButton = document.querySelector("#copy-message-button");
 const copyMessageStatus = document.querySelector("#copy-message-status");
+const groundPopover = document.querySelector("#ground-popover");
+const groundStepCount = document.querySelector("#ground-step-count");
+const groundTitle = document.querySelector("#ground-title");
+const groundPrompt = document.querySelector("#ground-prompt");
+const groundAnswer = document.querySelector("#ground-answer");
 const dailyEntriesKey = "quickResetDailyEntries";
 const weeklyEntriesKey = "quickResetWeeklyEntries";
 const supportPlanKey = "quickResetSupportPlan";
@@ -25,6 +30,15 @@ let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let selectedCalendarEntry = null;
 let editingDailyEntryId = null;
 let editingDailyEntryDate = null;
+let groundStepIndex = 0;
+let groundAnswers = [];
+const groundSteps = [
+  ["5 things I can see", "Name five things you can see around you."],
+  ["4 things I can touch", "Notice four things you can touch or feel."],
+  ["3 things I can hear", "Listen for three sounds around you."],
+  ["2 things I can smell", "Notice two smells, even if they are subtle."],
+  ["1 emotion I can feel", "Name one emotion you can feel right now."],
+];
 
 const infoCopy = {
   mind: "Naming one thing can make it feel a little less noisy. You do not need to explain it perfectly.",
@@ -352,6 +366,30 @@ function saveWeeklyReflection() {
   }
 }
 
+function renderGroundStep() {
+  const [title, prompt] = groundSteps[groundStepIndex];
+  groundStepCount.textContent = `Step ${groundStepIndex + 1} of ${groundSteps.length}`;
+  groundTitle.textContent = title;
+  groundPrompt.textContent = prompt;
+  groundAnswer.value = groundAnswers[groundStepIndex] || "";
+  document.querySelector("[data-ground-back]").disabled = groundStepIndex === 0;
+  document.querySelector("[data-ground-next]").hidden = groundStepIndex === groundSteps.length - 1;
+  document.querySelector("[data-ground-done]").hidden = groundStepIndex !== groundSteps.length - 1;
+}
+
+function openGroundingExercise() {
+  groundStepIndex = 0;
+  groundAnswers = [];
+  renderGroundStep();
+  groundPopover.hidden = false;
+  groundAnswer.focus();
+}
+
+function closeGroundingExercise() {
+  groundPopover.hidden = true;
+  groundAnswers = [];
+}
+
 function createDailyEntry() {
   const selectedMood = document.querySelector('.choice-button[data-group="mood"].selected');
   const selectedSigns = [...document.querySelectorAll('.choice-button[data-group="am-i"].selected')];
@@ -558,6 +596,38 @@ entryPopover.querySelector("[data-entry-delete]").addEventListener("click", () =
 });
 entryPopover.addEventListener("click", (event) => {
   if (event.target === entryPopover) closeEntryPopover();
+});
+
+document.querySelectorAll("[data-ground-open]").forEach((button) => {
+  button.addEventListener("click", openGroundingExercise);
+});
+
+groundAnswer.addEventListener("input", () => {
+  groundAnswers[groundStepIndex] = groundAnswer.value;
+});
+
+document.querySelector("[data-ground-back]").addEventListener("click", () => {
+  groundAnswers[groundStepIndex] = groundAnswer.value;
+  if (groundStepIndex > 0) {
+    groundStepIndex -= 1;
+    renderGroundStep();
+    groundAnswer.focus();
+  }
+});
+
+document.querySelector("[data-ground-next]").addEventListener("click", () => {
+  groundAnswers[groundStepIndex] = groundAnswer.value;
+  if (groundStepIndex < groundSteps.length - 1) {
+    groundStepIndex += 1;
+    renderGroundStep();
+    groundAnswer.focus();
+  }
+});
+
+document.querySelector("[data-ground-done]").addEventListener("click", closeGroundingExercise);
+document.querySelector("[data-ground-close]").addEventListener("click", closeGroundingExercise);
+groundPopover.addEventListener("click", (event) => {
+  if (event.target === groundPopover) closeGroundingExercise();
 });
 
 supportPlanForm.querySelector(".support-save-button").addEventListener("click", saveSupportPlan);

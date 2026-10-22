@@ -631,6 +631,83 @@ h1 {
   margin-top: 21px;
 }
 
+.ground-popover {
+  position: fixed;
+  inset: 0;
+  z-index: 23;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(38, 58, 58, 0.22);
+}
+
+.ground-popover__card {
+  width: min(100%, 350px);
+  padding: 22px 18px 17px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.ground-progress {
+  margin-top: 19px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.ground-popover__card h3 {
+  margin: 9px 0 8px;
+  font-family: var(--serif);
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.ground-prompt {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ground-popover__card textarea {
+  display: block;
+  width: 100%;
+  min-height: 83px;
+  padding: 11px 12px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+}
+
+.ground-popover__card textarea:focus {
+  border-color: var(--sage-dark);
+}
+
+.ground-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.ground-actions [data-ground-back] {
+  grid-column: 1 / -1;
+}
+
+.ground-actions [data-ground-next],
+.ground-actions [data-ground-done] {
+  grid-column: 1 / -1;
+}
+
 .support-card,
 .support-section {
   margin-top: 30px;
@@ -660,6 +737,29 @@ h1 {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.ground-button {
+  min-height: 46px;
+  margin-top: 22px;
+  padding: 11px 16px;
+  border: 1px solid var(--sage-dark);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--sage-dark);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.ground-button:hover,
+.ground-button:focus-visible {
+  background: var(--sage-soft);
+  outline: none;
+}
+
+.ground-button--support {
+  margin-top: 18px;
 }
 
 .message-card {

@@ -33,6 +33,7 @@
               Take a few quiet minutes for yourself, whether the day has been long or simply full.
             </p>
           </div>
+          <button class="ground-button" type="button" data-ground-open>Ground Myself</button>
           <form class="reset-form" id="quick-reset-form">
             <fieldset class="reset-section">
               <legend>
@@ -278,6 +279,7 @@
             <span class="card-label">Your support card</span>
             <h3>Start with someone you trust.</h3>
             <p>Look at your support card and choose the person or service that feels easiest to contact right now.</p>
+            <button class="ground-button ground-button--support" type="button" data-ground-open>Ground Myself</button>
           </div>
 
           <section class="support-section" aria-labelledby="counsellor-title">
@@ -409,6 +411,24 @@
         <div class="entry-actions">
           <button class="confirm-button confirm-button--secondary" type="button" data-entry-delete>Delete Entry</button>
           <button class="confirm-button confirm-button--primary" type="button" data-entry-edit>Edit Entry</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ground-popover" id="ground-popover" role="dialog" aria-modal="true" aria-labelledby="ground-title" hidden>
+      <div class="ground-popover__card">
+        <button class="info-close" type="button" data-ground-close aria-label="Close grounding exercise">×</button>
+        <p class="card-label">CC0015 grounding</p>
+        <div class="ground-progress" aria-label="Grounding exercise progress">
+          <span id="ground-step-count">Step 1 of 5</span>
+        </div>
+        <h3 id="ground-title"></h3>
+        <p class="ground-prompt" id="ground-prompt"></p>
+        <textarea id="ground-answer" rows="3" maxlength="300" placeholder="Take your time."></textarea>
+        <div class="ground-actions">
+          <button class="confirm-button confirm-button--secondary" type="button" data-ground-back>Back</button>
+          <button class="confirm-button confirm-button--primary" type="button" data-ground-next>Next</button>
+          <button class="confirm-button confirm-button--primary" type="button" data-ground-done hidden>Done</button>
         </div>
       </div>
     </div>
