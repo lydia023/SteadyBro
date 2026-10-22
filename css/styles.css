@@ -276,7 +276,7 @@ h1 {
 .done-button {
   width: 100%;
   min-height: 58px;
-  margin-top: 12px;
+  margin-top: 30px;
   border: 0;
   border-radius: 14px;
   background: var(--sage-dark);
@@ -306,6 +306,105 @@ h1 {
 
 .form-status--error {
   color: #a45151;
+}
+
+.reflection-form {
+  margin-top: 30px;
+}
+
+.reflection-prompt {
+  padding: 22px 0 24px;
+  border-top: 1px solid var(--line);
+}
+
+.reflection-prompt label {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.reflection-prompt textarea {
+  display: block;
+  width: 100%;
+  min-height: 74px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+}
+
+.reflection-prompt textarea:focus {
+  border-color: var(--sage-dark);
+}
+
+.reflection-prompt textarea::placeholder {
+  color: #a3afab;
+}
+
+.deeper-reflection {
+  margin-top: 3px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.deeper-reflection summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 16px;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.deeper-reflection summary::-webkit-details-marker {
+  display: none;
+}
+
+.deeper-reflection summary strong,
+.deeper-reflection summary small {
+  display: block;
+}
+
+.deeper-reflection summary strong {
+  font-size: 14px;
+}
+
+.deeper-reflection summary small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.details-icon {
+  color: var(--sage-dark);
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.deeper-reflection[open] .details-icon {
+  transform: rotate(45deg);
+}
+
+.deeper-reflection__fields {
+  padding: 0 16px 4px;
+}
+
+.deeper-reflection__fields .reflection-prompt:first-child {
+  border-top: 1px solid var(--line);
 }
 
 .info-popover {

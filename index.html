@@ -168,11 +168,55 @@
               Notice what has been taking up space this week and what has helped you get through it.
             </p>
           </div>
-          <div class="placeholder-card">
-            <span class="card-label">Coming next</span>
-            <h3>Your weekly reflection will live here.</h3>
-            <p>A few guided prompts will help you make sense of the week without overthinking it.</p>
-          </div>
+          <form class="reflection-form" id="weekly-reflection-form">
+            <div class="reflection-prompt">
+              <label for="repeating-thoughts">1. What thoughts keep going round my head this week?</label>
+              <textarea id="repeating-thoughts" name="repeatingThoughts" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="reflection-prompt">
+              <label for="proud-of">2. What am I proud of myself for this week?</label>
+              <textarea id="proud-of" name="proudOf" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="reflection-prompt">
+              <label for="self-care">3. One thing I did for myself this week</label>
+              <textarea id="self-care" name="selfCare" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="reflection-prompt">
+              <label for="wish-different">4. What is something I wish I did differently?</label>
+              <textarea id="wish-different" name="wishDifferent" rows="3" maxlength="500"></textarea>
+            </div>
+
+            <details class="deeper-reflection">
+              <summary>
+                <span>
+                  <strong>Optional Deeper Reflection</strong>
+                  <small>Only open this if it feels useful.</small>
+                </span>
+                <span class="details-icon" aria-hidden="true">+</span>
+              </summary>
+              <div class="deeper-reflection__fields">
+                <div class="reflection-prompt">
+                  <label for="feeling">What am I feeling?</label>
+                  <textarea id="feeling" name="feeling" rows="2" maxlength="400"></textarea>
+                </div>
+                <div class="reflection-prompt">
+                  <label for="controllable">What can I control right now?</label>
+                  <textarea id="controllable" name="controllable" rows="2" maxlength="400"></textarea>
+                </div>
+                <div class="reflection-prompt">
+                  <label for="matters">What matters to me beyond this problem?</label>
+                  <textarea id="matters" name="matters" rows="2" maxlength="400"></textarea>
+                </div>
+                <div class="reflection-prompt">
+                  <label for="friend-advice">One thing I would say to a friend going through the same thing</label>
+                  <textarea id="friend-advice" name="friendAdvice" rows="2" maxlength="400"></textarea>
+                </div>
+              </div>
+            </details>
+
+            <button class="done-button" type="button">Save Reflection</button>
+            <p class="form-status" id="weekly-reflection-status" role="status" aria-live="polite"></p>
+          </form>
         </section>
 
         <section

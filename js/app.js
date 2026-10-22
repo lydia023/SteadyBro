@@ -5,8 +5,11 @@ const infoPopover = document.querySelector("#info-popover");
 const infoTitle = document.querySelector("#info-title");
 const quickResetForm = document.querySelector("#quick-reset-form");
 const quickResetStatus = document.querySelector("#quick-reset-status");
+const weeklyReflectionForm = document.querySelector("#weekly-reflection-form");
+const weeklyReflectionStatus = document.querySelector("#weekly-reflection-status");
 const updatePopover = document.querySelector("#update-popover");
 const dailyEntriesKey = "quickResetDailyEntries";
+const weeklyEntriesKey = "quickResetWeeklyEntries";
 let pendingDailyUpdate = null;
 
 const infoCopy = {
@@ -43,6 +46,80 @@ function readDailyEntries() {
 
 function writeDailyEntries(entries) {
   localStorage.setItem(dailyEntriesKey, JSON.stringify(entries));
+}
+
+function getWeekStartDate() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  today.setDate(today.getDate() - daysSinceMonday);
+  return [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function readWeeklyEntries() {
+  try {
+    const storedEntries = localStorage.getItem(weeklyEntriesKey);
+
+    if (!storedEntries) {
+      return [];
+    }
+
+    const parsedEntries = JSON.parse(storedEntries);
+    return Array.isArray(parsedEntries) ? parsedEntries : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeWeeklyEntries(entries) {
+  localStorage.setItem(weeklyEntriesKey, JSON.stringify(entries));
+}
+
+function showWeeklyStatus(message, type) {
+  weeklyReflectionStatus.textContent = message;
+  weeklyReflectionStatus.className = `form-status form-status--${type}`;
+}
+
+function saveWeeklyReflection() {
+  const formData = new FormData(weeklyReflectionForm);
+  const entry = {
+    id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    weekStart: getWeekStartDate(),
+    timestamp: new Date().toISOString(),
+    repeatingThoughts: formData.get("repeatingThoughts").trim(),
+    proudOf: formData.get("proudOf").trim(),
+    selfCare: formData.get("selfCare").trim(),
+    wishDifferent: formData.get("wishDifferent").trim(),
+    feeling: formData.get("feeling").trim(),
+    controllable: formData.get("controllable").trim(),
+    matters: formData.get("matters").trim(),
+    friendAdvice: formData.get("friendAdvice").trim(),
+  };
+  const entries = readWeeklyEntries();
+  const existingEntryIndex = entries.findIndex((item) => item && item.weekStart === entry.weekStart);
+
+  if (existingEntryIndex !== -1) {
+    entry.id = entries[existingEntryIndex].id;
+    entries[existingEntryIndex] = entry;
+  } else {
+    entries.push(entry);
+  }
+
+  try {
+    writeWeeklyEntries(entries);
+    showWeeklyStatus(
+      existingEntryIndex === -1
+        ? "Reflection saved privately on this device."
+        : "This week's reflection was updated.",
+      "success",
+    );
+  } catch {
+    showWeeklyStatus("This reflection could not be saved on this device.", "error");
+  }
 }
 
 function createDailyEntry() {
@@ -198,6 +275,7 @@ document.querySelector("[data-support-link]").addEventListener("click", (event) 
 });
 
 quickResetForm.querySelector(".done-button").addEventListener("click", saveDailyEntry);
+weeklyReflectionForm.querySelector(".done-button").addEventListener("click", saveWeeklyReflection);
 
 updatePopover.querySelector("[data-update-confirm]").addEventListener("click", () => {
   if (pendingDailyUpdate) {
