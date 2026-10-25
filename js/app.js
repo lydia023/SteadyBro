@@ -36,6 +36,8 @@ const weeklyEntriesKey = "quickResetWeeklyEntries";
 const supportPlanKey = "quickResetSupportPlan";
 const progressKey = "steadyBroProgress";
 const appStorageKeys = [dailyEntriesKey, weeklyEntriesKey, supportPlanKey, progressKey];
+const DEMO_MODE = true;
+const DEMO_PROGRESS = { daily: 15, weekly: 2 };
 let pendingDailyUpdate = null;
 let pendingDeletion = null;
 let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -46,6 +48,8 @@ let groundStepIndex = 0;
 let groundAnswers = [];
 let expandedPastReflection = null;
 let editingWeeklyEntryId = null;
+let demoClaimedCycles = 0;
+const demoVoucherCodes = [];
 const groundSteps = [
   ["5 things I can see", "Name five things you can see around you."],
   ["4 things I can touch", "Notice four things you can touch or feel."],
@@ -120,8 +124,63 @@ function formatReadableDate(dateKey) {
   }).format(new Date(year, month - 1, day));
 }
 
+function getDemoDailyEntries() {
+  const offsets = [
+    0, 1, 2, 4, 5, 7, 8, 10, 11, 12, 14, 15, 17, 19, 20, 21, 22, 24, 25,
+  ];
+  return offsets.slice(0, DEMO_PROGRESS.daily).map((offset, index) => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() - offset);
+    return {
+      id: `demo-daily-${index + 1}`,
+      date: formatDateKey(date),
+      mood: ["okay", "stressed", "okay", "overwhelmed"][index % 4],
+      signs: index % 3 === 0 ? ["Stuck thinking about one thing"] : [],
+      needs: index % 3 === 1 ? ["Move — exercise/stretch"] : ["Write — get it out of my head"],
+      otherNeed: "",
+      tomorrowAction: ["Take one small step", "Get some rest", "Talk to someone I trust"][index % 3],
+      supportNeed: index % 5 === 0 ? "yes" : "no",
+      isDemo: true,
+    };
+  });
+}
+
+function getWeekStartForDate(date) {
+  const weekStart = new Date(date);
+  const dayOfWeek = weekStart.getDay();
+  const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  weekStart.setDate(weekStart.getDate() - daysSinceMonday);
+  return formatDateKey(weekStart);
+}
+
+function getDemoWeeklyEntries() {
+  const offsets = [14, 7, 0];
+  return offsets.slice(0, DEMO_PROGRESS.weekly).map((offset, index) => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() - offset);
+    return {
+      id: `demo-weekly-${index + 1}`,
+      weekStart: getWeekStartForDate(date),
+      timestamp: date.toISOString(),
+      repeatingThoughts: [
+        "I kept thinking about finding a better balance this week.",
+        "I was wondering whether I handled a difficult conversation well.",
+        "I kept thinking about what I want to do differently next week.",
+      ][index],
+      controllable: "How I respond and whether I take the next small step.",
+      proudOf: "I kept going even when the week felt demanding.",
+      selfCare: "I made time to rest and reset after a long day.",
+      wishDifferent: "Next week, I will ask for support a little earlier.",
+      isDemo: true,
+    };
+  });
+}
+
 function getCalendarEntries() {
-  return readDailyEntries().filter((entry) => entry && /^\d{4}-\d{2}-\d{2}$/.test(entry.date));
+  const entries = DEMO_MODE ? getDemoDailyEntries() : readDailyEntries();
+  return entries.filter((entry) => entry && /^\d{4}-\d{2}-\d{2}$/.test(entry.date));
 }
 
 function renderCalendar() {
@@ -197,7 +256,11 @@ function showEntryPopover(entry) {
     [...(entry.needs || []), entry.otherNeed].filter(Boolean).join(", ") || "None recorded";
   document.querySelector("#entry-action").textContent = entry.tomorrowAction || "None recorded";
   entryPopover.hidden = false;
-  entryPopover.querySelector("[data-entry-edit]").focus();
+  const editButton = entryPopover.querySelector("[data-entry-edit]");
+  const deleteButton = entryPopover.querySelector("[data-entry-delete]");
+  editButton.disabled = Boolean(entry.isDemo);
+  deleteButton.disabled = Boolean(entry.isDemo);
+  editButton.focus();
 }
 
 function editDailyEntry(entry) {
@@ -307,22 +370,25 @@ function writeProgressState(state) {
 }
 
 function getEligibleDailyEntries() {
+  const entries = DEMO_MODE ? getDemoDailyEntries() : readDailyEntries();
   return [...new Map(
-    readDailyEntries()
+    entries
       .filter((entry) => entry && /^\d{4}-\d{2}-\d{2}$/.test(entry.date))
       .map((entry) => [entry.date, entry]),
   ).values()];
 }
 
 function getEligibleWeeklyEntries() {
+  const entries = DEMO_MODE ? getDemoWeeklyEntries() : readWeeklyEntries();
   return [...new Map(
-    readWeeklyEntries()
+    entries
       .filter((entry) => entry && /^\d{4}-\d{2}-\d{2}$/.test(entry.weekStart))
       .map((entry) => [entry.weekStart, entry]),
   ).values()];
 }
 
 function getJournalProgress() {
+  if (DEMO_MODE) return { ...DEMO_PROGRESS };
   return {
     daily: getEligibleDailyEntries().length,
     weekly: getEligibleWeeklyEntries().length,
@@ -409,7 +475,9 @@ function renderJournalProgress() {
   if (!list || !status) return;
 
   const progress = getJournalProgress();
-  const state = readProgressState();
+  const state = DEMO_MODE
+    ? { claimedCycles: demoClaimedCycles, voucherCodes: demoVoucherCodes }
+    : readProgressState();
   const claimedCycles = Math.min(3, state.claimedCycles);
   const currentCycle = claimedCycles + 1;
   list.innerHTML = claimedCycles < 3 ? `
@@ -460,7 +528,12 @@ function renderJournalProgress() {
     const nextCycle = claimedCycles + 1;
     const voucherCodes = [...readProgressState().voucherCodes];
     voucherCodes[claimedCycles] = `STEADYBRO-REWARD-${String(nextCycle).padStart(2, "0")}`;
-    writeProgressState({ claimedCycles: nextCycle, voucherCodes });
+    if (DEMO_MODE) {
+      demoClaimedCycles = nextCycle;
+      demoVoucherCodes[claimedCycles] = `STEADYBRO-REWARD-${String(nextCycle).padStart(2, "0")}`;
+    } else {
+      writeProgressState({ claimedCycles: nextCycle, voucherCodes });
+    }
     renderJournalProgress();
   });
   status.append(message, claimButton);
@@ -665,7 +738,7 @@ function createReflectionAnswer(label, answer) {
 
 function renderPastReflections() {
   pastReflectionList.innerHTML = "";
-  const reflections = readWeeklyEntries();
+  const reflections = DEMO_MODE ? getDemoWeeklyEntries() : readWeeklyEntries();
 
   if (reflections.length === 0) {
     pastReflectionList.innerHTML =

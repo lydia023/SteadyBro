@@ -14,6 +14,7 @@ This first version includes the responsive application shell:
 - Mood Calendar
 - Support options, predefined AI Support Chat and counselling flows
 - Journal Progress with up to three locally claimed $5 Shopee sample vouchers
+- Presentation demo mode with separate sample journal history
 - Mobile bottom navigation
 - Responsive desktop layout
 - Local-only privacy message
@@ -25,6 +26,12 @@ storage. Existing journal data remains under the original
 `steadyBroProgress`. Each reward cycle requires 18 unique Daily Journal dates
 and 3 unique Weekly Reflection `weekStart` periods. Up to three cycles can be
 claimed; missing days do not reset progress and journal entries are preserved.
+
+Presentation demo mode is controlled by the `DEMO_MODE` and `DEMO_PROGRESS`
+constants in `js/app.js`. It displays separate, generated sample entries and
+does not read or write real journal progress while enabled. Set `DEMO_MODE` to
+`false` before using the app with real data. To demonstrate an unlocked first
+reward, change the demo progress to `daily: 18, weekly: 3`.
 
 ## Privacy
 
