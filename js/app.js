@@ -38,6 +38,7 @@ const progressKey = "steadyBroProgress";
 const appStorageKeys = [dailyEntriesKey, weeklyEntriesKey, supportPlanKey, progressKey];
 const demoState = new URLSearchParams(window.location.search).get("demo");
 const DEMO_MODE = demoState === "progress" || demoState === "reward";
+const REWARD_DEMO_MODE = demoState === "reward";
 const DEMO_PROGRESS = demoState === "reward"
   ? { daily: 18, weekly: 3 }
   : { daily: 15, weekly: 2 };
@@ -65,6 +66,11 @@ const moodEmojis = {
   stressed: "😐",
   overwhelmed: "😣",
 };
+
+function createDemoVoucherCode() {
+  const randomPart = Math.random().toString(36).slice(2, 10).toUpperCase();
+  return `STEADYBRO-DEMO-${randomPart}`;
+}
 
 const infoCopy = {
   mind: "Naming one thing can make it feel a little less noisy. You do not need to explain it perfectly.",
@@ -530,11 +536,14 @@ function renderJournalProgress() {
   claimButton.addEventListener("click", () => {
     const nextCycle = claimedCycles + 1;
     const voucherCodes = [...readProgressState().voucherCodes];
-    voucherCodes[claimedCycles] = `STEADYBRO-REWARD-${String(nextCycle).padStart(2, "0")}`;
+    const voucherCode = REWARD_DEMO_MODE
+      ? createDemoVoucherCode()
+      : `STEADYBRO-REWARD-${String(nextCycle).padStart(2, "0")}`;
     if (DEMO_MODE) {
       demoClaimedCycles = nextCycle;
-      demoVoucherCodes[claimedCycles] = `STEADYBRO-REWARD-${String(nextCycle).padStart(2, "0")}`;
+      demoVoucherCodes[claimedCycles] = voucherCode;
     } else {
+      voucherCodes[claimedCycles] = voucherCode;
       writeProgressState({ claimedCycles: nextCycle, voucherCodes });
     }
     renderJournalProgress();
