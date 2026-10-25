@@ -828,6 +828,20 @@ function showFormStatus(message, type) {
   quickResetStatus.className = `form-status form-status--${type}`;
 }
 
+function resetDailyForm() {
+  quickResetForm.reset();
+  quickResetForm.querySelectorAll(".choice-button").forEach((button) => {
+    button.classList.remove("selected");
+    button.setAttribute("aria-pressed", "false");
+  });
+  const otherNeed = quickResetForm.querySelector("#other-need");
+  if (otherNeed) otherNeed.hidden = true;
+  const supportPrompt = quickResetForm.querySelector("[data-support-link]");
+  if (supportPrompt) supportPrompt.hidden = true;
+  editingDailyEntryId = null;
+  editingDailyEntryDate = null;
+}
+
 function completeDailySave(entry, entries, existingEntryIndex) {
   if (existingEntryIndex === -1) {
     entries.push(entry);
@@ -838,6 +852,7 @@ function completeDailySave(entry, entries, existingEntryIndex) {
 
   try {
     writeDailyEntries(entries);
+    resetDailyForm();
     showFormStatus(
       existingEntryIndex === -1 ? "Saved privately on this device." : "Today's Quick Reset was updated.",
       "success",
