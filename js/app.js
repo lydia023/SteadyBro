@@ -38,7 +38,6 @@ const progressKey = "steadyBroProgress";
 const appStorageKeys = [dailyEntriesKey, weeklyEntriesKey, supportPlanKey, progressKey];
 const demoState = new URLSearchParams(window.location.search).get("demo");
 const DEMO_MODE = demoState === "progress" || demoState === "reward";
-const REWARD_DEMO_MODE = demoState === "reward";
 const DEMO_PROGRESS = demoState === "reward"
   ? { daily: 18, weekly: 3 }
   : { daily: 15, weekly: 2 };
@@ -66,11 +65,6 @@ const moodEmojis = {
   stressed: "😐",
   overwhelmed: "😣",
 };
-
-function createDemoVoucherCode() {
-  const randomPart = Math.random().toString(36).slice(2, 10).toUpperCase();
-  return `STEADYBRO-DEMO-${randomPart}`;
-}
 
 const infoCopy = {
   mind: "Naming one thing can make it feel a little less noisy. You do not need to explain it perfectly.",
@@ -510,9 +504,35 @@ function renderJournalProgress() {
   }
 
   if (cycleDaily < 18 || cycleWeekly < 3) {
-    status.innerHTML = `<p>Complete 18 Daily entries and 3 Weekly Reflections to unlock your $5 voucher.</p><p>Rewards claimed: ${claimedCycles} / 3</p>`;
-    return;
+  const lastCode = claimedCycles > 0
+    ? state.voucherCodes[claimedCycles - 1]
+    : null;
+
+  status.innerHTML = `
+    ${lastCode ? `
+      <strong>Voucher claimed 🎉</strong>
+      <p>Your Shopee redemption code:</p>
+      <p><strong>${lastCode}</strong></p>
+      <button class="support-save-button" id="copy-voucher-code" type="button">
+        Copy Code
+      </button>
+    ` : ""}
+
+    <p>Complete 18 Daily entries and 3 Weekly Reflections to unlock your next $5 voucher.</p>
+    <p>Rewards claimed: ${claimedCycles} / 3</p>
+  `;
+
+  const copyButton = document.querySelector("#copy-voucher-code");
+
+  if (copyButton && lastCode) {
+    copyButton.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(lastCode);
+      copyButton.textContent = "Copied ✓";
+    });
   }
+
+  return;
+}
 
   const heading = document.createElement("strong");
   heading.textContent = "Reward unlocked 🎉";
@@ -536,14 +556,11 @@ function renderJournalProgress() {
   claimButton.addEventListener("click", () => {
     const nextCycle = claimedCycles + 1;
     const voucherCodes = [...readProgressState().voucherCodes];
-    const voucherCode = REWARD_DEMO_MODE
-      ? createDemoVoucherCode()
-      : `STEADYBRO-REWARD-${String(nextCycle).padStart(2, "0")}`;
+    voucherCodes[claimedCycles] = `SB-SHOPEE-5OFF-${String(nextCycle).padStart(2, "0")}`;
     if (DEMO_MODE) {
       demoClaimedCycles = nextCycle;
-      demoVoucherCodes[claimedCycles] = voucherCode;
+      demoVoucherCodes[claimedCycles] = `SB-SHOPEE-5OFF-${String(nextCycle).padStart(2, "0")}`;
     } else {
-      voucherCodes[claimedCycles] = voucherCode;
       writeProgressState({ claimedCycles: nextCycle, voucherCodes });
     }
     renderJournalProgress();
