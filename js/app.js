@@ -46,30 +46,6 @@ let groundStepIndex = 0;
 let groundAnswers = [];
 let expandedPastReflection = null;
 let editingWeeklyEntryId = null;
-const mockPastReflections = [
-  {
-    weekStart: "2026-10-12",
-    repeatingThoughts: "I kept thinking about whether I am doing enough during training.",
-    proudOf: "I got through a demanding week and still showed up.",
-    selfCare: "I took one evening to rest without feeling guilty.",
-    wishDifferent: "I wish I had asked for a little help earlier.",
-    feeling: "Tired, but more settled by the end of the week.",
-    controllable: "How I speak to myself and whether I take the next small step.",
-    matters: "The people I care about and becoming more steady.",
-    friendAdvice: "You do not have to handle the whole week at once.",
-  },
-  {
-    weekStart: "2026-10-05",
-    repeatingThoughts: "I was replaying one conversation and wondering if I said the wrong thing.",
-    proudOf: "I kept my routine even on a low-energy day.",
-    selfCare: "I went for a short walk after dinner.",
-    wishDifferent: "I wish I had put my phone down earlier at night.",
-    feeling: "",
-    controllable: "",
-    matters: "",
-    friendAdvice: "",
-  },
-];
 const groundSteps = [
   ["5 things I can see", "Name five things you can see around you."],
   ["4 things I can touch", "Notice four things you can touch or feel."],
@@ -689,7 +665,7 @@ function createReflectionAnswer(label, answer) {
 
 function renderPastReflections() {
   pastReflectionList.innerHTML = "";
-  const reflections = readWeeklyEntries().length ? readWeeklyEntries() : mockPastReflections;
+  const reflections = readWeeklyEntries();
 
   if (reflections.length === 0) {
     pastReflectionList.innerHTML =
