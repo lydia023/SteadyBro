@@ -36,8 +36,11 @@ const weeklyEntriesKey = "quickResetWeeklyEntries";
 const supportPlanKey = "quickResetSupportPlan";
 const progressKey = "steadyBroProgress";
 const appStorageKeys = [dailyEntriesKey, weeklyEntriesKey, supportPlanKey, progressKey];
-const DEMO_MODE = true;
-const DEMO_PROGRESS = { daily: 15, weekly: 2 };
+const demoState = new URLSearchParams(window.location.search).get("demo");
+const DEMO_MODE = demoState === "progress" || demoState === "reward";
+const DEMO_PROGRESS = demoState === "reward"
+  ? { daily: 18, weekly: 3 }
+  : { daily: 15, weekly: 2 };
 let pendingDailyUpdate = null;
 let pendingDeletion = null;
 let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);

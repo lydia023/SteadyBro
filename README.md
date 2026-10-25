@@ -27,11 +27,12 @@ storage. Existing journal data remains under the original
 and 3 unique Weekly Reflection `weekStart` periods. Up to three cycles can be
 claimed; missing days do not reset progress and journal entries are preserved.
 
-Presentation demo mode is controlled by the `DEMO_MODE` and `DEMO_PROGRESS`
-constants in `js/app.js`. It displays separate, generated sample entries and
-does not read or write real journal progress while enabled. Set `DEMO_MODE` to
-`false` before using the app with real data. To demonstrate an unlocked first
-reward, change the demo progress to `daily: 18, weekly: 3`.
+Presentation demo mode is controlled by the URL query parameter. Use
+`?demo=progress` for 15 Daily entries and 2 Weekly Reflections, or
+`?demo=reward` for 18 Daily entries and 3 Weekly Reflections with the first
+reward unlocked. With no `demo` parameter, the app uses real localStorage data.
+Demo entries are generated separately and do not read or write real journal
+progress while enabled.
 
 ## Privacy
 
