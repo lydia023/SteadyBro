@@ -7,11 +7,14 @@
       name="description"
       content="Quick Reset is a private digital reflection and support tool for Full-Time National Servicemen."
     />
-    <title>Quick Reset</title>
+    <title>SteadyBro</title>
     <link rel="stylesheet" href="css/styles.css" />
     <script src="js/app.js" defer></script>
   </head>
   <body>
+    <div class="splash-screen" id="splash-screen" aria-label="SteadyBro loading">
+      <img src="assets/SteadyBroLogo.png" alt="SteadyBro logo" />
+    </div>
     <div class="app-shell">
       <header class="site-header">
         <div class="brand-lockup">
@@ -28,6 +31,32 @@
       </header>
 
       <main class="page-content">
+        <section class="page" id="home-page" data-page="home" aria-labelledby="home-title">
+          <div class="page-intro">
+            <p class="section-kicker">Home</p>
+            <h2 id="home-title">A steady place to begin.</h2>
+            <p class="intro-copy">Keep your next small step close, without needing to do everything at once.</p>
+          </div>
+          <section class="home-status-card" aria-labelledby="journal-status-title">
+            <p class="card-label">Today</p>
+            <h3 id="journal-status-title">Journaled yet?</h3>
+            <p id="journal-status-copy">A quick check-in is waiting when you are ready.</p>
+            <button class="done-button home-action-button" id="home-journal-action" type="button">Make an entry now</button>
+          </section>
+          <button class="home-progress-link" type="button" data-target-page="calendar">
+            <span><strong>Journal Progress</strong><small>Track your reward progress on the Mood Calendar.</small></span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <section class="home-shortcut-card" aria-labelledby="home-support-title">
+            <p class="card-label">Need some support?</p>
+            <h3 id="home-support-title">You can choose what feels manageable.</h3>
+            <div class="home-shortcut-actions">
+              <button class="support-save-button" type="button" data-open-chat>AI Support Chat</button>
+              <button class="support-save-button" type="button" data-target-page="support">Support Options</button>
+            </div>
+          </section>
+        </section>
+
         <section class="page active" id="daily-page" data-page="daily" aria-labelledby="daily-title">
           <div class="page-intro">
             <p class="section-kicker">Daily / Quick Reset</p>
@@ -36,7 +65,17 @@
               Take a few quiet minutes for yourself, whether the day has been long or simply full.
             </p>
           </div>
-          <button class="ground-button" type="button" data-ground-open>Ground Myself</button>
+          <div class="journal-tools">
+            <button class="ground-button" type="button" data-ground-open>Ground Myself</button>
+            <button class="weekly-entry-card" type="button" data-target-page="weekly">
+              <span class="weekly-entry-card__icon" aria-hidden="true">↻</span>
+              <span class="weekly-entry-card__copy">
+                <strong>Weekly Reflection</strong>
+                <small>Take a little more time to look back at your week.</small>
+              </span>
+              <span class="weekly-entry-card__arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
           <form class="reset-form" id="quick-reset-form">
             <fieldset class="reset-section">
               <legend>
@@ -158,6 +197,23 @@
           </form>
         </section>
 
+        <section class="page" id="ai-chat-page" data-page="ai-chat" aria-labelledby="ai-chat-title" hidden>
+          <div class="page-intro">
+            <p class="section-kicker">Support</p>
+            <h2 id="ai-chat-title">AI Support Chat</h2>
+            <p class="intro-copy">Talk through what’s on your mind and find your next step.</p>
+          </div>
+          <div class="chat-card">
+            <div class="chat-header">
+              <p class="chat-name">SteadyBro AI</p>
+              <button class="chat-restart-button" type="button" data-chat-restart>Restart Chat</button>
+            </div>
+            <div class="chat-thread" id="chat-thread" aria-live="polite"></div>
+            <div class="chat-actions" id="chat-actions"></div>
+            <p class="chat-footer">AI support is not a substitute for professional care. If you need additional support, counselling and 24-hour services are available.</p>
+          </div>
+        </section>
+
         <section
           class="page"
           id="weekly-page"
@@ -171,6 +227,7 @@
             <p class="intro-copy">
               Notice what has been taking up space this week and what has helped you get through it.
             </p>
+            <p class="weekly-next-due" id="weekly-next-due" role="status"></p>
             <button
               class="past-reflections-toggle"
               type="button"
@@ -190,51 +247,28 @@
             </div>
             <div class="past-reflection-list" id="past-reflection-list"></div>
           </section>
+
           <form class="reflection-form" id="weekly-reflection-form">
             <div class="reflection-prompt">
-              <label for="repeating-thoughts">1. What thoughts keep going round my head this week?</label>
-              <textarea id="repeating-thoughts" name="repeatingThoughts" rows="3" maxlength="500"></textarea>
+              <label for="repeating-thoughts">1. What thought keeps going round my head this week?</label>
+              <textarea id="repeating-thoughts" name="repeatingThoughts" rows="3" maxlength="500" placeholder="I keep thinking about..."></textarea>
             </div>
             <div class="reflection-prompt">
-              <label for="proud-of">2. What am I proud of myself for this week?</label>
-              <textarea id="proud-of" name="proudOf" rows="3" maxlength="500"></textarea>
+              <label for="controllable">2. Which part of this can I do something about, and which part can’t I?</label>
+              <textarea id="controllable" name="controllable" rows="3" maxlength="500" placeholder="I can do something about... but I can’t control..."></textarea>
             </div>
             <div class="reflection-prompt">
-              <label for="self-care">3. One thing I did for myself this week</label>
-              <textarea id="self-care" name="selfCare" rows="3" maxlength="500"></textarea>
+              <label for="proud-of">3. What am I proud of myself this week?</label>
+              <textarea id="proud-of" name="proudOf" rows="3" maxlength="500" placeholder="I’m proud that I... because..."></textarea>
             </div>
             <div class="reflection-prompt">
-              <label for="wish-different">4. What is something I wish I did differently?</label>
-              <textarea id="wish-different" name="wishDifferent" rows="3" maxlength="500"></textarea>
+              <label for="self-care">4. What is one thing I did for myself, or that mattered to me, this week?</label>
+              <textarea id="self-care" name="selfCare" rows="3" maxlength="500" placeholder="I looked after myself by... and it mattered because..."></textarea>
             </div>
-
-            <details class="deeper-reflection">
-              <summary>
-                <span>
-                  <strong>Optional Deeper Reflection</strong>
-                  <small>Only open this if it feels useful.</small>
-                </span>
-                <span class="details-icon" aria-hidden="true">+</span>
-              </summary>
-              <div class="deeper-reflection__fields">
-                <div class="reflection-prompt">
-                  <label for="feeling">What am I feeling?</label>
-                  <textarea id="feeling" name="feeling" rows="2" maxlength="400"></textarea>
-                </div>
-                <div class="reflection-prompt">
-                  <label for="controllable">What can I control right now?</label>
-                  <textarea id="controllable" name="controllable" rows="2" maxlength="400"></textarea>
-                </div>
-                <div class="reflection-prompt">
-                  <label for="matters">What matters to me beyond this problem?</label>
-                  <textarea id="matters" name="matters" rows="2" maxlength="400"></textarea>
-                </div>
-                <div class="reflection-prompt">
-                  <label for="friend-advice">One thing I would say to a friend going through the same thing</label>
-                  <textarea id="friend-advice" name="friendAdvice" rows="2" maxlength="400"></textarea>
-                </div>
-              </div>
-            </details>
+            <div class="reflection-prompt">
+              <label for="wish-different">5. What is one thing I’ll try differently next week?</label>
+              <textarea id="wish-different" name="wishDifferent" rows="3" maxlength="500" placeholder="Next week, when ___, I will ___"></textarea>
+            </div>
 
             <button class="done-button" type="button">Save Reflection</button>
             <p class="form-status" id="weekly-reflection-status" role="status" aria-live="polite"></p>
@@ -256,6 +290,12 @@
               to yourself.
             </p>
           </div>
+          <section class="calendar-progress-card" aria-labelledby="calendar-progress-title">
+            <p class="card-label">Journal Progress</p>
+            <h3 id="calendar-progress-title">Keep going at your own pace.</h3>
+            <div class="journal-progress-list" id="journal-progress-list"></div>
+            <div class="reward-status" id="reward-status"></div>
+          </section>
           <div class="calendar-card" id="mood-calendar">
             <div class="calendar-toolbar">
               <button class="month-button" type="button" id="previous-month">Previous Month</button>
@@ -296,21 +336,85 @@
               Find a few grounded reminders and support options for difficult days.
             </p>
           </div>
-          <div class="support-card support-card--reminder">
-            <span class="card-label">Your support card</span>
-            <h3>Start with someone you trust.</h3>
-            <p>Look at your support card and choose the person or service that feels easiest to contact right now.</p>
-            <button class="ground-button ground-button--support" type="button" data-ground-open>Ground Myself</button>
-          </div>
-
-          <section class="support-section" aria-labelledby="counsellor-title">
-            <div class="support-heading">
-              <div>
-                <p class="card-label">My counsellor</p>
-                <h3 id="counsellor-title">Keep their details close</h3>
-              </div>
-              <span class="support-heading-note">Stored only here</span>
+          <aside class="physical-card-reminder" aria-label="Physical Support Card reminder">
+            <span class="physical-card-reminder__icon" aria-hidden="true">▣</span>
+            <div>
+              <strong>Your Physical Support Card</strong>
+              <p>Keep it with you. It has your trusted people, grounding steps, message starter and support routes.</p>
             </div>
+          </aside>
+
+          <section class="support-section support-section--urgent" aria-labelledby="urgent-support-title">
+            <div class="support-heading support-heading--stacked">
+              <p class="card-label">Immediate options</p>
+              <h3 id="urgent-support-title">Need help right now?</h3>
+              <p class="support-section-intro">Choose one small next step.</p>
+            </div>
+            <div class="support-action-list">
+              <article class="support-action-card">
+                <div>
+                  <h4>AI Support Chat</h4>
+                  <p>Talk through what’s on your mind and find your next step.</p>
+                </div>
+                <button class="support-save-button" type="button" data-open-chat>Open AI Support Chat</button>
+              </article>
+              <article class="support-action-card">
+                <div>
+                  <h4>Ground Myself</h4>
+                  <p>Use the 5-4-3-2-1 grounding exercise to bring your attention back to the present.</p>
+                </div>
+                <button class="support-save-button" type="button" data-ground-open>Start Grounding</button>
+              </article>
+              <article class="support-action-card support-action-card--hotlines">
+                <div>
+                  <h4>24-hour Support</h4>
+                  <p>Immediate support is available anytime.</p>
+                </div>
+                <div class="resource-list resource-list--compact">
+                  <div class="resource-item">
+                    <div>
+                      <h4>SAF Hotline</h4>
+                      <p>1800 278 0022</p>
+                    </div>
+                    <a class="contact-button" href="tel:18002780022">Call</a>
+                  </div>
+                  <div class="resource-item">
+                    <div>
+                      <h4>National Mindline</h4>
+                      <p>Available 24 hours</p>
+                      <p>Call 1771 · WhatsApp +65 6669 1771</p>
+                    </div>
+                    <div class="contact-actions">
+                      <a class="contact-button" href="tel:1771">Call</a>
+                      <a class="contact-button contact-button--whatsapp" href="https://wa.me/6566691771">WhatsApp</a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="support-section" id="support-plan-section" aria-labelledby="trusted-people-title">
+            <div class="support-heading support-heading--stacked">
+              <p class="card-label">Personal support</p>
+              <h3 id="trusted-people-title">Reach someone I trust</h3>
+              <p class="support-section-intro">You don’t need the perfect words. Start with someone already on your support card.</p>
+            </div>
+            <div class="trusted-contact-list">
+              <article class="trusted-contact-card">
+                <span class="trusted-contact-card__label">Counsellor / support contact</span>
+                <strong id="trusted-counsellor-name">Add their details below</strong>
+                <div class="contact-actions" id="counsellor-contact-actions" hidden></div>
+              </article>
+            </div>
+            <div class="support-contact-editor">
+              <div class="support-heading">
+                <div>
+                  <p class="card-label">Personal support contact</p>
+                  <h4 id="counsellor-title">Keep their details close</h4>
+                </div>
+                <span class="support-heading-note">Stored only here</span>
+              </div>
             <form class="support-plan-form" id="support-plan-form">
               <label>
                 <span>Counsellor name</span>
@@ -327,51 +431,41 @@
               <button class="support-save-button" type="button">Save counsellor details</button>
               <p class="form-status" id="support-plan-status" role="status" aria-live="polite"></p>
             </form>
-            <div class="contact-actions" id="counsellor-contact-actions" hidden></div>
+            </div>
+            <div class="message-card" aria-labelledby="opening-message-title">
+              <div class="support-heading support-heading--stacked">
+                <h4 id="opening-message-title">Not sure what to say?</h4>
+              </div>
+              <p class="opening-message" id="opening-message">“Hey, I’ve been having a rough time with ____. Got time to talk?”</p>
+              <button class="support-save-button" id="copy-message-button" type="button">Copy Message</button>
+              <p class="form-status" id="copy-message-status" role="status" aria-live="polite"></p>
+            </div>
           </section>
 
-          <section class="support-section message-card" aria-labelledby="opening-message-title">
-            <div class="support-heading">
-              <div>
-                <h3 id="opening-message-title">Talk it through with a friend</h3>
-                <p class="message-subheading">
-                  You don't have to go through it alone. Here's a quick message to help you start
-                  the chat.
-                </p>
-              </div>
+          <section class="support-section" id="professional-support-section" aria-labelledby="professional-title">
+            <div class="support-heading support-heading--stacked">
+              <p class="card-label">Professional options</p>
+              <h3 id="professional-title">Professional support</h3>
+              <p class="support-section-intro">If you want additional support, choose the option that works for you.</p>
             </div>
-            <p class="opening-message" id="opening-message">Hey, I've been having a rough time with ____. Got time to talk?</p>
-            <button class="support-save-button" id="copy-message-button" type="button">Copy Message</button>
-            <p class="form-status" id="copy-message-status" role="status" aria-live="polite"></p>
-          </section>
-
-          <section class="support-section" aria-labelledby="professional-title">
-            <div class="support-heading">
-              <div>
-                <p class="card-label">Professional support</p>
-                <h3 id="professional-title">Talk to someone trained to help</h3>
-              </div>
-            </div>
-            <div class="resource-list">
-              <article class="resource-item">
-                <div>
-                  <h4>SAF Counselling Hotline</h4>
-                  <p>1800 278 0022</p>
-                </div>
-                <a class="contact-button" href="tel:18002780022">Call</a>
+            <div class="provider-list" aria-label="Counselling services">
+              <button class="provider-card" type="button" data-provider="saf">
+                <span class="provider-card__number" aria-hidden="true">01</span>
+                <span class="provider-card__copy"><strong>SAF Counselling Centre</strong><span>Request a private counselling session through SAF support services.</span></span>
+                <span class="provider-card__arrow">Arrange SAF Counselling <span aria-hidden="true">→</span></span>
+              </button>
+              <article class="provider-card">
+                <span class="provider-card__number" aria-hidden="true">02</span>
+                <span class="provider-card__copy"><strong>IMH Chat</strong><span>Access IMH’s online support and self-referral service.</span></span>
+                <a class="provider-card__link" href="https://form.gov.sg/6853c53335176019fd6e8391" target="_blank" rel="noopener noreferrer">Open IMH Form</a>
               </article>
-              <article class="resource-item">
-                <div>
-                  <h4>National Mindline</h4>
-                  <p>Available 24 hours</p>
-                  <p>Call 1771 · WhatsApp +65 6669 1771</p>
-                </div>
-                <div class="contact-actions">
-                  <a class="contact-button" href="tel:1771">Call</a>
-                  <a class="contact-button contact-button--whatsapp" href="https://wa.me/6566691771">WhatsApp</a>
-                </div>
-              </article>
+              <button class="provider-card" type="button" data-provider="samh">
+                <span class="provider-card__number" aria-hidden="true">03</span>
+                <span class="provider-card__copy"><strong>SAMH</strong><span>Request counselling support through the Singapore Association for Mental Health.</span></span>
+                <span class="provider-card__arrow">Arrange SAMH Counselling <span aria-hidden="true">→</span></span>
+              </button>
             </div>
+            <div class="internal-screen" id="provider-screen" hidden></div>
           </section>
         </section>
       </main>
@@ -382,13 +476,13 @@
       </aside>
 
       <nav class="bottom-nav" aria-label="Main navigation">
-        <button class="nav-item active" type="button" data-target="daily" aria-current="page">
+        <button class="nav-item active" type="button" data-target="home" aria-current="page">
           <span class="nav-icon" aria-hidden="true">✦</span>
-          <span>Daily</span>
+          <span>Home</span>
         </button>
-        <button class="nav-item" type="button" data-target="weekly">
+        <button class="nav-item" type="button" data-target="daily">
           <span class="nav-icon" aria-hidden="true">↻</span>
-          <span>Weekly</span>
+          <span>Journal</span>
         </button>
         <button class="nav-item" type="button" data-target="calendar">
           <span class="nav-icon" aria-hidden="true">▦</span>
